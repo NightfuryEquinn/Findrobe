@@ -1,5 +1,6 @@
 import 'package:findrobe_app/animations/fade_route.dart';
 import 'package:findrobe_app/firebase_options.dart';
+import 'package:findrobe_app/routes/findrobe_bottombar.dart';
 import 'package:findrobe_app/views/collection_add_page.dart';
 import 'package:findrobe_app/views/collection_page.dart';
 import 'package:findrobe_app/views/collection_single_page.dart';
@@ -14,6 +15,7 @@ import 'package:findrobe_app/views/reset_page.dart';
 import 'package:findrobe_app/views/view_user_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +32,7 @@ void main() async {
     print("Error initializing Firebase: $error");
   }
 
-  runApp(const MainApp());
+  runApp(const ProviderScope(child: MainApp()));
 }
 
 class MainApp extends StatelessWidget {
@@ -39,7 +41,8 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: "/postrobe",
+      debugShowCheckedModeBanner: false,
+      initialRoute: "/home",
       onGenerateRoute: (RouteSettings settings) {
         Widget page;
 
@@ -79,6 +82,9 @@ class MainApp extends StatelessWidget {
             break;
           case "/view_user":
             page = const ViewUserPage();
+            break;
+          case "/home":
+            page = const FindrobeBottomBar();
             break;
           default:
             page = const LoginPage();

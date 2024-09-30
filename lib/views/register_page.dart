@@ -21,58 +21,60 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.grey,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Image.asset(
-                "assets/logo.png",
-                width: 250,
-                height: 250,
-              ),
-              const SizedBox(height: 10.0),
-              FindrobeTextfield(
-                labelText: "Email Address", 
-                controller: emailCtrl,
-                isEmail: true,
-              ),
-              const SizedBox(height: 20.0),
-              FindrobeTextfield(
-                labelText: "Password", 
-                controller: passwordCtrl,
-                isSecure: true,
-              ),
-              const SizedBox(height: 20.0),
-              FindrobeTextfield(
-                labelText: "Confirm Password", 
-                controller: confirmCtrl,
-                isSecure: true,
-              ),
-              const SizedBox(height: 20.0),
-              FindrobeTextfield(
-                labelText: "Username", 
-                controller: usernameCtrl,
-              ),
-              const SizedBox(height: 50.0),
-              FindrobeButton(
-                buttonText: "Register", 
-                onPressed: () {
-                  
-                },
-                width: 140.0,
-              ),
-              const SizedBox(height: 15.0),
-              Align(
-                alignment: Alignment.center,
-                child: FindrobeTextbutton(
-                  labelText: "Back",
-                  onPressed: () => Navigator.pop(context),
-                )
-              ),
-            ],
+      body: SafeArea(
+        top: true, 
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Image.asset(
+                  "assets/logo.png",
+                  width: 250,
+                  height: 250,
+                ),
+                FindrobeTextfield(
+                  labelText: "Email Address", 
+                  controller: emailCtrl,
+                  isEmail: true,
+                ),
+                const SizedBox(height: 20.0),
+                FindrobeTextfield(
+                  labelText: "Password", 
+                  controller: passwordCtrl,
+                  isSecure: true,
+                ),
+                const SizedBox(height: 20.0),
+                FindrobeTextfield(
+                  labelText: "Confirm Password", 
+                  controller: confirmCtrl,
+                  isSecure: true,
+                ),
+                const SizedBox(height: 20.0),
+                FindrobeTextfield(
+                  labelText: "Username", 
+                  controller: usernameCtrl,
+                ),
+                const SizedBox(height: 30.0),
+                FindrobeButton(
+                  buttonText: "Register", 
+                  onPressed: () {
+                    
+                  },
+                  width: 140.0,
+                ),
+                const SizedBox(height: 15.0),
+                Align(
+                  alignment: Alignment.center,
+                  child: FindrobeTextbutton(
+                    labelText: "Back",
+                    onPressed: () => Navigator.pop(context),
+                  )
+                ),
+              ],
+            )
           )
         )
       )
