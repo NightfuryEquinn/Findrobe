@@ -1,3 +1,4 @@
+import 'package:findrobe_app/animations/fade_route.dart';
 import 'package:findrobe_app/firebase_options.dart';
 import 'package:findrobe_app/views/collection_add_page.dart';
 import 'package:findrobe_app/views/collection_page.dart';
@@ -38,21 +39,54 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: "/login",
-      routes: {
-        "/collection_add": (context) => const CollectionAddPage(),
-        "/collection": (context) => const CollectionPage(),
-        "/collection_single": (context) => const CollectionSinglePage(),
-        "/findrobe": (context) => const FindrobePage(),
-        "/login": (context) => const LoginPage(),
-        "/postrobe_add": (context) => const PostrobeAddPage(),
-        "/postrobe": (context) => const PostrobePage(),
-        "/postrobe_single": (context) => const PostrobeSinglePage(),
-        "/profile": (context) => const ProfilePage(),
-        "/register": (context) => const RegisterPage(),
-        "/reset": (context) => const ResetPage(),
-        "/view_user": (context) => const ViewUserPage()
+      initialRoute: "/postrobe",
+      onGenerateRoute: (RouteSettings settings) {
+        Widget page;
+
+        switch (settings.name) {
+          case "/collection_add":
+            page = const CollectionAddPage();
+            break;
+          case "/collection":
+            page = const CollectionPage();
+            break;
+          case "/collection_single":
+            page = const CollectionSinglePage();
+            break;
+          case "/findrobe":
+            page = const FindrobePage();
+            break;
+          case "/login":
+            page = const LoginPage();
+            break;
+          case "/postrobe_add":
+            page = const PostrobeAddPage();
+            break;
+          case "/postrobe":
+            page = const PostrobePage();
+            break;
+          case "/postrobe_single":
+            page = const PostrobeSinglePage();
+            break;
+          case "/profile":
+            page = const ProfilePage();
+            break;
+          case "/register":
+            page = const RegisterPage();
+            break;
+          case "/reset":
+            page = const ResetPage();
+            break;
+          case "/view_user":
+            page = const ViewUserPage();
+            break;
+          default:
+            page = const LoginPage();
+        }
+
+        return FadeRoute(page: page);
       },
+       
     );
   }
 }
