@@ -20,6 +20,7 @@ class _FindrobePageState extends State<FindrobePage> {
   File? _bottomWearImage;
   File? _shoesImage;
 
+  // TODO: Get from saved collection
   Future<void> _pickImage(String type) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
@@ -29,12 +30,13 @@ class _FindrobePageState extends State<FindrobePage> {
           _topWearImage = File(pickedFile.path);
         } else if (type == "Bottom Wear") {
           _bottomWearImage = File(pickedFile.path);
-        } else if (type == "Shoes") {
+        } else if (type == "Footwear") {
           _shoesImage = File(pickedFile.path);
         }
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,10 +74,10 @@ class _FindrobePageState extends State<FindrobePage> {
                       ),
                       const SizedBox(height: 5.0),
                       FindrobeImagepicker(
-                        labelText: "Shoes", 
+                        labelText: "Footwear", 
                         height: 100.0,
                         onTap: () {
-                          _pickImage("Shoes");
+                          _pickImage("Footwear");
                         },
                         image: _shoesImage,
                         boxfit: BoxFit.cover,

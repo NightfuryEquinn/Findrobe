@@ -13,6 +13,10 @@ List<Widget> buildImageGrid(BuildContext context, List<String> imageUrls) {
       );
     } else {
       imageWidgets.add(_buildClickableImage(context, imageUrls[i]));
+      
+      imageWidgets.add(
+        const SizedBox(width: 15.0)
+      );
     }
   }
 

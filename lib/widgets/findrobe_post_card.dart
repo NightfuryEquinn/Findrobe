@@ -8,8 +8,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FindrobePostCard extends StatelessWidget {
+  final String postId;
+
   const FindrobePostCard({
-    super.key
+    super.key,
+    required this.postId
   });
 
   @override
@@ -92,19 +95,22 @@ class FindrobePostCard extends StatelessWidget {
           const SizedBox(height: 15.0),
           SizedBox(
             height: 100,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: buildImageGrid(
-                context,
-                [
-                  "https://www.uniqlo.com/jp/ja/contents/feature/masterpiece/common/img/product/item_03_kv.jpg?240829",
-                  "https://www.uniqlo.com/jp/ja/contents/feature/masterpiece/common/img/product/item_03_kv.jpg?240829",
-                  "https://www.uniqlo.com/jp/ja/contents/feature/masterpiece/common/img/product/item_03_kv.jpg?240829",
-                  "https://www.uniqlo.com/jp/ja/contents/feature/masterpiece/common/img/product/item_03_kv.jpg?240829",
-                ]
-              ),
-            )
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: buildImageGrid(
+                  context,
+                  [
+                    "https://www.uniqlo.com/jp/ja/contents/feature/masterpiece/common/img/product/item_03_kv.jpg?240829",
+                    "https://www.uniqlo.com/jp/ja/contents/feature/masterpiece/common/img/product/item_03_kv.jpg?240829",
+                    "https://www.uniqlo.com/jp/ja/contents/feature/masterpiece/common/img/product/item_03_kv.jpg?240829",
+                    "https://www.uniqlo.com/jp/ja/contents/feature/masterpiece/common/img/product/item_03_kv.jpg?240829",
+                  ]
+                ),
+              )
+            ) 
           ),
           const SizedBox(height: 10.0),
           const Divider(
@@ -114,11 +120,11 @@ class FindrobePostCard extends StatelessWidget {
             color: AppColors.grey,
           ),
           const SizedBox(height: 10.0),
-          const Row(
+          Row(
             children: [
-              LikeButtonBlock(likeCount: 13),
-              SizedBox(width: 25.0),
-              CommentButtonBlock(commentCount: 10)
+              LikeButtonBlock(postId: postId),
+              const SizedBox(width: 25.0),
+              const CommentButtonBlock(commentCount: 10)
             ],
           )
         ],
