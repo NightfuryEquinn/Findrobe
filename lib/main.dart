@@ -1,4 +1,5 @@
 import 'package:findrobe_app/animations/fade_route.dart';
+import 'package:findrobe_app/constants/arguments.dart';
 import 'package:findrobe_app/firebase_options.dart';
 import 'package:findrobe_app/routes/findrobe_bottombar.dart';
 import 'package:findrobe_app/views/collection_add_page.dart';
@@ -48,7 +49,11 @@ class MainApp extends StatelessWidget {
 
         switch (settings.name) {
           case "/collection_add":
-            page = const CollectionAddPage();
+            final EditCollectionArgs? args = settings.arguments as EditCollectionArgs?;
+
+            page = CollectionAddPage(
+              args: args
+            );
             break;
           case "/collection":
             page = const CollectionPage();

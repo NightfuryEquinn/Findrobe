@@ -10,6 +10,12 @@ class AppFonts {
     color: AppColors.white
   );
 
+  static TextStyle poiret32 = GoogleFonts.poiretOne(
+    fontSize: 32.0,
+    fontWeight: FontWeight.normal,
+    color: AppColors.white
+  );
+
   static TextStyle poiret20 = GoogleFonts.poiretOne(
     fontSize: 20.0,
     fontWeight: FontWeight.normal,

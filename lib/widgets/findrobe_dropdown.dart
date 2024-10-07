@@ -61,6 +61,7 @@ class FindrobeDropdown extends ConsumerWidget {
           ),
           padding: const EdgeInsets.symmetric(horizontal: 15.0),
           child: DropdownButton<String>(
+            iconSize: 0.0,
             value: selectedValue,
             hint: Text(
               "Select a Category",
@@ -71,7 +72,7 @@ class FindrobeDropdown extends ConsumerWidget {
             },
             menuMaxHeight: 450.0,
             borderRadius: BorderRadius.circular(10.0),
-            dropdownColor: AppColors.white,
+            dropdownColor: AppColors.black,
             underline: const SizedBox.shrink(),
             items: sections.expand((section) {
               return [
@@ -83,9 +84,10 @@ class FindrobeDropdown extends ConsumerWidget {
                       vertical: 5.0
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.black,
+                      color: AppColors.grey,
                       borderRadius: BorderRadius.circular(5.0)
                     ),
+                    width: 300.0,
                     child: Text(
                       section.sectionTitle,
                       style: AppFonts.poiret20,
@@ -97,7 +99,7 @@ class FindrobeDropdown extends ConsumerWidget {
                     value: item.toString().toUpperCase(),
                     child: Text(
                       item.toString().split('.').last[0].toUpperCase() + item.toString().split('.').last.substring(1),
-                      style: AppFonts.forum16black,
+                      style: AppFonts.forum16white,
                     )
                   );
                 }),

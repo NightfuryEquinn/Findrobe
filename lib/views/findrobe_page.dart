@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:findrobe_app/theme/app_colors.dart';
+import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';
 import 'package:findrobe_app/widgets/findrobe_header.dart';
 import 'package:findrobe_app/widgets/findrobe_imagepicker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -20,9 +22,8 @@ class _FindrobePageState extends State<FindrobePage> {
   File? _bottomWearImage;
   File? _shoesImage;
 
-  // TODO: Get from saved collection
-  Future<void> _pickImage(String type) async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+  Future<void> _pickImage(String type, ImageSource source) async {
+    final pickedFile = await _picker.pickImage(source: source);
 
     if (pickedFile != null) {
       setState(() {
@@ -35,6 +36,63 @@ class _FindrobePageState extends State<FindrobePage> {
         }
       });
     }
+  }
+
+  void _showImageSourceDialog(BuildContext context, String type) {
+    showModalBottomSheet(
+      backgroundColor: AppColors.white,
+      context: context, 
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10.0), 
+          topRight: Radius.circular(10.0)
+        )
+      ),
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10.0), 
+                    topRight: Radius.circular(10.0)
+                  ),
+                ),
+                leading: const Icon(
+                  CupertinoIcons.camera,
+                  size: 24.0,
+                  color: AppColors.black,
+                ),
+                title: Text(
+                  "Camera",
+                  style: AppFonts.forum16black,
+                ),
+                onTap: () {
+                  _pickImage(type, ImageSource.camera);
+                  Navigator.of(context).pop();
+                }
+              ),
+              ListTile(
+                leading: const Icon(
+                  CupertinoIcons.photo,
+                  size: 24.0,
+                  color: AppColors.black,
+                ),
+                title: Text(
+                  "Gallery",
+                  style: AppFonts.forum16black,
+                ),
+                onTap: () {
+                  _pickImage(type, ImageSource.gallery);
+                  Navigator.of(context).pop();
+                }
+              ),
+            ],
+          )
+        );
+      }
+    );
   }
 
   @override
@@ -59,7 +117,7 @@ class _FindrobePageState extends State<FindrobePage> {
                         labelText: "Top Wear", 
                         height: 200.0,
                         onTap: () {
-                          _pickImage("Top Wear");
+                          _showImageSourceDialog(context, "Top Wear");
                         },
                         image: _topWearImage,
                       ),
@@ -68,7 +126,7 @@ class _FindrobePageState extends State<FindrobePage> {
                         labelText: "Bottom Wear", 
                         height: 250.0,
                         onTap: () {
-                          _pickImage("Bottom Wear");
+                          _showImageSourceDialog(context, "Bottom Wear");
                         },
                         image: _bottomWearImage,
                       ),
@@ -77,7 +135,7 @@ class _FindrobePageState extends State<FindrobePage> {
                         labelText: "Footwear", 
                         height: 100.0,
                         onTap: () {
-                          _pickImage("Footwear");
+                          _showImageSourceDialog(context, "Footwear");
                         },
                         image: _shoesImage,
                         boxfit: BoxFit.cover,

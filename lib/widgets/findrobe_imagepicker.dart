@@ -22,32 +22,35 @@ class FindrobeImagepicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: height,
-        decoration: BoxDecoration(
-          color: AppColors.black,
-          borderRadius: BorderRadius.circular(10.0)
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10.0),
-          child: Center(
-            child: image == null ?
-              Text(
-                labelText,
-                style: AppFonts.poiret20,
-              )
-              :
-              Image.file(
-                image!,
-                fit: boxfit,
-                width: double.infinity,
-                
-              )
-          )
-        ),
-      )
+    return Material(
+      color: AppColors.black,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10.0))
+      ),
+      child: InkWell(
+        onTap: onTap,
+        splashColor: AppColors.overlayBeige,
+        borderRadius: BorderRadius.circular(10.0),
+        child: SizedBox(
+          height: height,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10.0),
+            child: Center(
+              child: image == null ?
+                Text(
+                  labelText,
+                  style: AppFonts.poiret20,
+                )
+                :
+                Image.file(
+                  image!,
+                  fit: boxfit,
+                  width: double.infinity,
+                )
+            )
+          ),
+        )
+      ) 
     );
   }
 }
