@@ -7,13 +7,15 @@ class FindrobeButton extends StatelessWidget {
   final double width;
   final Color buttonColor;
   final VoidCallback onPressed;
+  final bool alternative;
 
   const FindrobeButton({
     super.key,
     required this.buttonText,
     this.width = double.infinity,
     this.buttonColor = AppColors.beige,
-    required this.onPressed
+    required this.onPressed,
+    this.alternative = false
   });
 
   @override
@@ -24,7 +26,7 @@ class FindrobeButton extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: buttonColor,
-          overlayColor: AppColors.grey,
+          overlayColor: alternative ? AppColors.black : AppColors.beige,
           minimumSize: const Size(double.infinity, 40),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0)
@@ -32,7 +34,7 @@ class FindrobeButton extends StatelessWidget {
         ),
         child: Text(
           buttonText,
-          style: AppFonts.forum16black,
+          style: alternative ? AppFonts.forum16white : AppFonts.forum16black,
         ),
       ),
     );

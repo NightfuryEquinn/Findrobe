@@ -30,7 +30,7 @@ class FindrobePostCard extends StatelessWidget {
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, "/profile");
+                  Navigator.pushNamed(context, "/view_user");
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5.0),

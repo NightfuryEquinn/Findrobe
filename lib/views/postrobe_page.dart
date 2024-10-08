@@ -21,7 +21,7 @@ class _PostrobePageState extends State<PostrobePage> {
           padding: EdgeInsets.all(30.0),
           child: Column(
             children: [
-              FindrobeHeader(headerTitle: "Postrobe"),
+              FindrobeHeader(headerTitle: "Postrobes"),
               SizedBox(height: 30.0),
               Expanded(
                 child: SingleChildScrollView(

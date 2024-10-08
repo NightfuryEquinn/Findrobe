@@ -1,3 +1,4 @@
+import 'package:findrobe_app/global/image_modal.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ List<Widget> buildImageGrid(BuildContext context, List<String> imageUrls) {
 Widget _buildClickableImage(BuildContext context, String imageUrl) {
   return InkWell(
     onTap: () {
-      _showImageDialog(context, imageUrl);
+      showImageDialog(context, imageUrl);
     },
     child: ClipRRect(
       borderRadius: BorderRadius.circular(5.0),
@@ -71,30 +72,5 @@ Widget _buildClickableImageOverlay(BuildContext context, String imageUrl, String
         )
       ],
     )
-  );
-}
-
-// Show a larger image in dialog
-void _showImageDialog(BuildContext context, String imageUrl) {
-  showDialog(
-    context: context, 
-    builder: (context) {
-      return Dialog(
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.grey,
-            borderRadius: BorderRadius.circular(10.0)
-          ),
-          padding: const EdgeInsets.all(15.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(5.0),
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-            )
-          )
-        ),
-      );
-    }
   );
 }
