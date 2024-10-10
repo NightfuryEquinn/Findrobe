@@ -1,4 +1,7 @@
 analyzer:
   errors:
     avoid_print: ignore
+    unnecessary_nullable_for_final_variable_declarations: ignore
+    unused_field: ignore
+    use_build_context_synchronously: ignore
 include: package:flutter_lints/flutter.yaml

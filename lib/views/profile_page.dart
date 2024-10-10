@@ -1,3 +1,4 @@
+import 'package:findrobe_app/firebase/auth_repo.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';
@@ -16,6 +17,11 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController userCtrl = TextEditingController();
   final TextEditingController emailCtrl = TextEditingController();
+
+  Future<void> _logoutUser() async {
+    final authRepo = AuthRepo();
+    await authRepo.logoutUser();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +168,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             alternative: true,
                             buttonColor: AppColors.black,
                             onPressed: () {
-
+                              _logoutUser();
+                              Navigator.pushReplacementNamed(context, "/login");
                             }
                           ),
                           FindrobeButton(

@@ -1,24 +1,138 @@
+import 'package:findrobe_app/firebase/auth_repo.dart';
+import 'package:findrobe_app/global/loading_overlay.dart';
+import 'package:findrobe_app/providers/loading_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
+import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';
 import 'package:findrobe_app/widgets/findrobe_textbutton.dart';
 import 'package:findrobe_app/widgets/findrobe_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class RegisterPage extends StatefulWidget {
+class RegisterPage extends ConsumerStatefulWidget {
   const RegisterPage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  ConsumerState<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterPageState extends ConsumerState<RegisterPage> {
   final TextEditingController emailCtrl = TextEditingController();
   final TextEditingController passwordCtrl = TextEditingController();
   final TextEditingController confirmCtrl = TextEditingController();
   final TextEditingController usernameCtrl = TextEditingController();
+  bool isOverlayShown = false;
+  bool workAround = false;
+
+  Future<void> _registerNewUser(BuildContext context, WidgetRef ref, String email, String password, String confirm, String username) async {
+    final authRepo = AuthRepo();
+    final loadingState = ref.read(loadingProvider.notifier);
+
+    if (email.isEmpty || password.isEmpty || confirm.isEmpty || username.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.beige,
+          content: Text(
+            "All fields are required!",
+            style: AppFonts.forum16black,
+          ),
+          duration: const Duration(seconds: 4)
+        )
+      );
+
+      return;
+    }
+
+    if (password.length <= 7) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.beige,
+          content: Text(
+            "Use a password more than 8 characters!",
+            style: AppFonts.forum16black,
+          ),
+          duration: const Duration(seconds: 4)
+        )
+      );
+
+      return;
+    }
+
+    if (password != confirm) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.beige,
+          content: Text(
+            "Passwords do not match!",
+            style: AppFonts.forum16black,
+          ),
+          duration: const Duration(seconds: 4)
+        )
+      );
+
+      return;
+    }
+
+    loadingState.show();
+
+    final user = await authRepo.registerNewUser(email, password, username);
+
+    if (user != null) {
+      Navigator.pushReplacementNamed(context, "/home");
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.beige,
+          content: Text(
+            "Registration failed. Please try again! Maybe due to existing email.",
+            style: AppFonts.forum16black,
+          ),
+          duration: const Duration(seconds: 4)
+        )
+      );
+    }
+
+    if (!workAround) {
+      workAround = true; 
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.beige,
+          content: Text(
+            "Please login...",
+            style: AppFonts.forum16black,
+          ),
+          duration: const Duration(seconds: 4)
+        )
+      );
+    }
+
+    loadingState.hide();
+  } 
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(loadingProvider);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (isLoading && !isOverlayShown) {
+        isOverlayShown = true;
+
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return const LoadingOverlay();
+          }
+        );
+      } else if (!isLoading && isOverlayShown) {
+        if (Navigator.canPop(context)) {
+          Navigator.of(context).pop();
+          isOverlayShown = false;
+        }
+      }
+    });
+
     return Scaffold(
       backgroundColor: AppColors.grey,
       body: SafeArea(
@@ -61,7 +175,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 FindrobeButton(
                   buttonText: "Register", 
                   onPressed: () {
-                    
+                    _registerNewUser(
+                      context, 
+                      ref, 
+                      emailCtrl.text, 
+                      passwordCtrl.text, 
+                      confirmCtrl.text, 
+                      usernameCtrl.text
+                    );
                   },
                   width: 140.0,
                 ),

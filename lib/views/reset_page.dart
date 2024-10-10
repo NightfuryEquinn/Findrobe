@@ -45,11 +45,12 @@ class _ResetPageState extends State<ResetPage> {
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
+                        backgroundColor: AppColors.beige,
                         content: Text(
                           "Link sent! Check email.",
-                          style: AppFonts.forum16white,
+                          style: AppFonts.forum16black,
                         ), 
-                        duration: const Duration(seconds: 2)
+                        duration: const Duration(seconds: 4)
                       )
                     );
                   },

@@ -25,7 +25,7 @@ class CollectionAddPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {    
-    final String itemName = args?.itemName ?? "default";
+    final String itemName = args?.itemName ?? "Unknown";
 
     final ImagePicker picker = ImagePicker();
     final TextEditingController nameCtrl = TextEditingController(text: itemName);

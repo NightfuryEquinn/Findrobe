@@ -1,6 +1,10 @@
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:findrobe_app/firebase/auth_repo.dart';
+import 'package:findrobe_app/firebase/post_repo.dart';
+import 'package:findrobe_app/global/loading_overlay.dart';
+import 'package:findrobe_app/providers/loading_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';
@@ -8,18 +12,21 @@ import 'package:findrobe_app/widgets/findrobe_header.dart';
 import 'package:findrobe_app/widgets/findrobe_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
-class PostrobeAddPage extends StatefulWidget {
+class PostrobeAddPage extends ConsumerStatefulWidget {
   const PostrobeAddPage({super.key});
 
   @override
-  State<PostrobeAddPage> createState() => _PostrobeAddPageState();
+  ConsumerState<PostrobeAddPage> createState() => _PostrobeAddPageState();
 }
 
-class _PostrobeAddPageState extends State<PostrobeAddPage> {
+class _PostrobeAddPageState extends ConsumerState<PostrobeAddPage> {
+  final authRepo = AuthRepo();
+
   final ImagePicker picker = ImagePicker();
-  List<XFile> imageFiles = [];
+  List<File> imageFiles = [];
   Set<String> imageHashes = {};
   final TextEditingController titleCtrl = TextEditingController();
   final TextEditingController contentCtrl = TextEditingController();
@@ -31,7 +38,6 @@ class _PostrobeAddPageState extends State<PostrobeAddPage> {
   }
 
   Future<void> pickImages() async {
-    // ignore: unnecessary_nullable_for_final_variable_declarations
     final List<XFile>? pickedImages = await picker.pickMultiImage();
 
     if (pickedImages != null) {
@@ -41,7 +47,7 @@ class _PostrobeAddPageState extends State<PostrobeAddPage> {
 
         if (!imageHashes.contains(imageHash)) {
           setState(() {
-            imageFiles.add(image);
+            imageFiles.add(File(image.path));
             imageHashes.add(imageHash);
           });
         }
@@ -59,8 +65,93 @@ class _PostrobeAddPageState extends State<PostrobeAddPage> {
     });
   }
 
+  Future<void> _createPost(BuildContext context, WidgetRef ref, String title, String body, List<File> imageFiles) async {
+    final postRepo = PostRepo();
+    final loadingState = ref.read(loadingProvider.notifier);
+
+    if (title.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.beige,
+          content: Text(
+            "Title is required!",
+            style: AppFonts.forum16black,
+          ),
+          duration: const Duration(seconds: 4)
+        )
+      );
+
+      return;
+    }
+
+    if (body.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.beige,
+          content: Text(
+            "Content is required!",
+            style: AppFonts.forum16black,
+          ),
+          duration: const Duration(seconds: 4)
+        )
+      );
+
+      return;
+    }
+
+    loadingState.show();
+
+    final bool created = await postRepo.createPost(title, body, imageFiles);
+
+    if (created) {      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.beige,
+          content: Text(
+            "Post created!",
+            style: AppFonts.forum16black,
+          ),
+          duration: const Duration(seconds: 4)
+        )
+      );
+
+      Navigator.of(context).pop();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.beige,
+          content: Text(
+            "Failed to create post. Please try again!",
+            style: AppFonts.forum16black,
+          ),
+          duration: const Duration(seconds: 4)
+        )
+      );
+    }
+
+    loadingState.hide();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(loadingProvider);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (isLoading) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return const LoadingOverlay();
+          }
+        );
+      } else {
+        if (Navigator.canPop(context)) {
+          Navigator.of(context).pop();
+        }
+      }
+    });
+    
     return Scaffold(
       backgroundColor: AppColors.grey,
       body: SafeArea(
@@ -126,7 +217,7 @@ class _PostrobeAddPageState extends State<PostrobeAddPage> {
                                     return Stack(
                                       children: [
                                         Padding(
-                                          padding: EdgeInsets.only(right: 10.0),
+                                          padding: const EdgeInsets.only(right: 10.0),
                                           child: ClipRRect(
                                             borderRadius: BorderRadius.circular(10.0),
                                             child: Image.file(
@@ -203,7 +294,13 @@ class _PostrobeAddPageState extends State<PostrobeAddPage> {
                       FindrobeButton(
                         buttonText: "Publish", 
                         onPressed: () {
-
+                          _createPost(
+                            context, 
+                            ref, 
+                            titleCtrl.text, 
+                            contentCtrl.text, 
+                            imageFiles,
+                          );
                         }
                       )
                     ],

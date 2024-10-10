@@ -1,3 +1,4 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:findrobe_app/providers/bottombar_index_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/views/findrobe_page.dart';
@@ -25,51 +26,85 @@ class FindrobeBottomBar extends ConsumerWidget {
           ProfilePage()
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        elevation: 0,
+      bottomNavigationBar: CurvedNavigationBar(
+        index: bottomBarIndex,
+        height: 60.0,
+        color: AppColors.black,
         backgroundColor: AppColors.grey,
-        type: BottomNavigationBarType.fixed,
-        selectedIconTheme: const IconThemeData(
-          size: 36.0,
-          color: AppColors.white
-        ),
-        unselectedIconTheme: const IconThemeData(
-          size: 26.0,
-          color: Color(0xFF797979)
-        ),
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        currentIndex: bottomBarIndex,
+        buttonBackgroundColor: AppColors.beige,
+        animationCurve: Curves.fastEaseInToSlowEaseOut,
+        animationDuration: const Duration(milliseconds: 1000),
         onTap: (value) {
           ref.read(bottomBarIndexProvider.notifier).update((state) => value);
         },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(
-              CupertinoIcons.home
-            ),
-            label: "",
+        items: [
+          Icon(
+            CupertinoIcons.home,
+            size: 24.0,
+            color: bottomBarIndex == 0 ? AppColors.black : AppColors.beige,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              CupertinoIcons.plus_app
-            ),
-            label: "",
+          Icon(
+            CupertinoIcons.plus_app,
+            size: 24.0,
+            color: bottomBarIndex == 1 ? AppColors.black : AppColors.beige,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              CupertinoIcons.folder
-            ),
-            label: "",
+          Icon(
+            CupertinoIcons.folder,
+            size: 24.0,
+            color: bottomBarIndex == 2 ? AppColors.black : AppColors.beige,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              CupertinoIcons.profile_circled
-            ),
-            label: "",
+          Icon(
+            CupertinoIcons.profile_circled,
+            size: 24.0,
+            color: bottomBarIndex == 3 ? AppColors.black : AppColors.beige,
           ),
-        ]
+        ],
       ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   elevation: 0,
+      //   backgroundColor: AppColors.grey,
+      //   type: BottomNavigationBarType.fixed,
+      //   selectedIconTheme: const IconThemeData(
+      //     size: 36.0,
+      //     color: AppColors.white
+      //   ),
+      //   unselectedIconTheme: const IconThemeData(
+      //     size: 26.0,
+      //     color: Color(0xFF797979)
+      //   ),
+      //   showSelectedLabels: false,
+      //   showUnselectedLabels: false,
+      //   currentIndex: bottomBarIndex,
+      //   onTap: (value) {
+      //     ref.read(bottomBarIndexProvider.notifier).update((state) => value);
+      //   },
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(
+      //         CupertinoIcons.home
+      //       ),
+      //       label: "",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(
+      //         CupertinoIcons.plus_app
+      //       ),
+      //       label: "",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(
+      //         CupertinoIcons.folder
+      //       ),
+      //       label: "",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(
+      //         CupertinoIcons.profile_circled
+      //       ),
+      //       label: "",
+      //     ),
+      //   ]
+      // ),
     );
   }
 }
