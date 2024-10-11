@@ -10,7 +10,7 @@ class LoadingOverlay extends StatelessWidget {
     return const Stack(
       children: [
         ModalBarrier(
-          color: AppColors.overlayBlack,
+          color: AppColors.grey,
           dismissible: false
         ),
         Center(

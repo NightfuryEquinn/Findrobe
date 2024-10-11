@@ -133,7 +133,7 @@ class _FindrobePageState extends State<FindrobePage> {
                       const SizedBox(height: 5.0),
                       FindrobeImagepicker(
                         labelText: "Footwear", 
-                        height: 100.0,
+                        height: 150.0,
                         onTap: () {
                           _showImageSourceDialog(context, "Footwear");
                         },

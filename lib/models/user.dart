@@ -28,7 +28,9 @@ class FindrobeUser {
     };
   }
 
-  factory FindrobeUser.fromMap(Map<String, dynamic> map) {
+  factory FindrobeUser.fromMap(DocumentSnapshot doc) {
+    Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
+    
     return FindrobeUser(
       userId: map["userId"], 
       username: map["username"], 

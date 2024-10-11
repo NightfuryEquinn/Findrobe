@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class FindrobePost {
   final String postId;
   final String title;
@@ -20,7 +22,9 @@ class FindrobePost {
     };
   }
 
-  factory FindrobePost.fromMap(Map<String, dynamic> map) {
+  factory FindrobePost.fromMap(DocumentSnapshot doc) {
+    Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
+    
     return FindrobePost(
       postId: map["postId"], 
       title: map["title"], 
