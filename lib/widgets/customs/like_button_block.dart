@@ -1,4 +1,4 @@
-import 'package:findrobe_app/providers/like_button_provider.dart';
+import 'package:findrobe_app/providers/others/like_button_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:flutter/cupertino.dart';

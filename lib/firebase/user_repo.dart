@@ -1,18 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:findrobe_app/constants/firebase_collection.dart';
+import 'package:findrobe_app/firebase/auth_repo.dart';
 import 'package:findrobe_app/models/user.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class UserRepo {
+  final _authRepo = AuthRepo();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
-  User? _getCurrentUser() {
-    return _firebaseAuth.currentUser;
-  }
 
   Future<FindrobeUser?> fetchUserData() async {
-    final user = _getCurrentUser();
+    final user = _authRepo.getCurrentUser();
 
     if (user == null) {
       return null;
@@ -30,6 +26,14 @@ class UserRepo {
       print("Failed to fetch user data: $e");
 
       return null;
+    }
+  }
+
+  Future<void> logoutUser() async {
+    try {
+      await _authRepo.logoutUser();
+    } catch (e) {
+      print("Failed to log out: $e");
     }
   }
 }

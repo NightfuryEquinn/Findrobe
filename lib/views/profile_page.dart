@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'package:findrobe_app/firebase/auth_repo.dart';
 import 'package:findrobe_app/global/date_formatter.dart';
 import 'package:findrobe_app/global/loading_overlay.dart';
 import 'package:findrobe_app/models/user.dart';
-import 'package:findrobe_app/providers/add_image_provider.dart';
+import 'package:findrobe_app/providers/others/add_image_provider.dart';
 import 'package:findrobe_app/providers/user_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
@@ -25,34 +24,28 @@ class ProfilePage extends ConsumerStatefulWidget {
 }
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
-  FindrobeUser? user;
-
   final TextEditingController userCtrl = TextEditingController();
   final TextEditingController emailCtrl = TextEditingController();
-
-  Future<void> _logoutUser() async {
-    final authRepo = AuthRepo();
-    await authRepo.logoutUser();
-  }
-
-  Future<void> _fetchUserData() async {
-    final userData = await ref.read(userDataProvider.future);
-
-    setState(() {
-      user = userData;
-      userCtrl.text = user!.username;
-      emailCtrl.text = user!.email;
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
+    
+    Future.microtask(() => ref.read(userDataNotifierProvider.notifier).fetchUserData());
   }
 
   @override
   Widget build(BuildContext context) {
+    final userDataNotifier = ref.watch(userDataNotifierProvider);
+    final userDataNotifierRead = ref.read(userDataNotifierProvider.notifier);
+
+    final FindrobeUser? user = userDataNotifier;
+
+    if (user != null) {
+      userCtrl.text = user.username;
+      emailCtrl.text = user.email;
+    }
+   
     final ImagePicker picker = ImagePicker();
     final newProfilePic = ref.watch(addImageProvider);
     
@@ -149,16 +142,16 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(5.0),
-                                  child: user!.profilePic.isEmpty && newProfilePic == null ? 
+                                  child: user.profilePic.isEmpty && newProfilePic == null ? 
                                     Image.network(
                                       "https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg",
                                       width: 100,
                                       height: 100,
                                       fit: BoxFit.cover,
                                     )
-                                  : user!.profilePic.isNotEmpty ?
+                                  : user.profilePic.isNotEmpty ?
                                     Image.network(
-                                      user!.profilePic,
+                                      user.profilePic,
                                       fit: BoxFit.cover,
                                       width: 100,
                                       height: 100,
@@ -179,14 +172,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 Text(
-                                  user!.username,
+                                  user.username,
                                   style: AppFonts.poiret24
                                 ),
                                 const SizedBox(height: 5.0),
                                 SizedBox(
                                   width: 200.0,
                                   child: Text(
-                                    "Registered since ${formatTimestamp(timestamp: user!.dateRegistered)}",
+                                    "Registered since ${formatTimestamp(timestamp: user.dateRegistered)}",
                                     style: AppFonts.poiret12,
                                     softWrap: true,
                                   ),
@@ -281,7 +274,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                               alternative: true,
                               buttonColor: AppColors.black,
                               onPressed: () {
-                                _logoutUser();
+                                userDataNotifierRead.logoutUser();
                                 Navigator.pushReplacementNamed(context, "/login");
                               }
                             ),

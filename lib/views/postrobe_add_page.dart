@@ -1,10 +1,9 @@
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
-import 'package:findrobe_app/firebase/auth_repo.dart';
-import 'package:findrobe_app/firebase/post_repo.dart';
 import 'package:findrobe_app/global/loading_overlay.dart';
-import 'package:findrobe_app/providers/loading_provider.dart';
+import 'package:findrobe_app/providers/others/loading_provider.dart';
+import 'package:findrobe_app/providers/post_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';
@@ -23,8 +22,6 @@ class PostrobeAddPage extends ConsumerStatefulWidget {
 }
 
 class _PostrobeAddPageState extends ConsumerState<PostrobeAddPage> {
-  final authRepo = AuthRepo();
-
   final ImagePicker picker = ImagePicker();
   List<File> imageFiles = [];
   Set<String> imageHashes = {};
@@ -66,7 +63,7 @@ class _PostrobeAddPageState extends ConsumerState<PostrobeAddPage> {
   }
 
   Future<void> _createPost(BuildContext context, WidgetRef ref, String title, String body, List<File> imageFiles) async {
-    final postRepo = PostRepo();
+    final PostDataNotifier postDataNotifierRead = ref.read(postDataNotifierProvider.notifier);
     final loadingState = ref.read(loadingProvider.notifier);
 
     if (title.isEmpty) {
@@ -101,7 +98,7 @@ class _PostrobeAddPageState extends ConsumerState<PostrobeAddPage> {
 
     loadingState.show();
 
-    final bool created = await postRepo.createPost(title, body, imageFiles);
+    final bool created = await postDataNotifierRead.createPost(title, body, imageFiles);
 
     if (created) {      
       ScaffoldMessenger.of(context).showSnackBar(
@@ -301,6 +298,11 @@ class _PostrobeAddPageState extends ConsumerState<PostrobeAddPage> {
                             contentCtrl.text, 
                             imageFiles,
                           );
+
+                          titleCtrl.text = "";
+                          contentCtrl.text = "";
+                          imageFiles = [];
+                          imageHashes = {};
                         }
                       )
                     ],

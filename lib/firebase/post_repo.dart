@@ -43,13 +43,11 @@ class PostRepo {
         userId: authRepo.getCurrentUser()!.uid
       );
 
-      await postsCollection
-        .doc()
+      await postRef
         .set(findrobePost.toMap());
 
       for (String imageUrl in imageUrls) {
-        await postsCollection
-          .doc()
+        await postRef
           .collection(imagesInPostCollection)
           .add({
             "imageUrl": imageUrl,

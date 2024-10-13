@@ -1,7 +1,7 @@
 import 'package:findrobe_app/animations/fade_route.dart';
 import 'package:findrobe_app/constants/arguments.dart';
-import 'package:findrobe_app/firebase/auth_repo.dart';
 import 'package:findrobe_app/firebase_options.dart';
+import 'package:findrobe_app/providers/auth_data_provider.dart';
 import 'package:findrobe_app/routes/findrobe_bottombar.dart';
 import 'package:findrobe_app/views/collection_add_page.dart';
 import 'package:findrobe_app/views/collection_page.dart';
@@ -42,11 +42,11 @@ class MainApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authRepo = AuthRepo();
+    final currentUser = ref.watch(authDataNotifierProvider);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: authRepo.getCurrentUser() != null ? const FindrobeBottomBar() : const LoginPage(),
+      home: currentUser != null ? const FindrobeBottomBar() : const LoginPage(),
       onGenerateRoute: (RouteSettings settings) {
         Widget page;
 

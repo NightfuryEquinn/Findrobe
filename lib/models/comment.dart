@@ -1,13 +1,35 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class PostrobeComment {
   final int commentId;
   final String content;
   final int userId;
   final int postId;
 
-  PostrobeComment({
+  const PostrobeComment({
     required this.commentId,
     required this.content,
     required this.userId,
     required this.postId
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      "commentId": commentId,
+      "content": content,
+      "userId": userId,
+      "postId": postId
+    };
+  }
+
+  factory PostrobeComment.fromMap(DocumentSnapshot doc) {
+    Map<String, dynamic> map = doc.data() as Map<String, dynamic>;
+
+    return PostrobeComment(
+      commentId: map["commentId"],
+      content: map["content"],
+      userId: map["userId"],
+      postId: map["postId"]
+    );
+  }
 }

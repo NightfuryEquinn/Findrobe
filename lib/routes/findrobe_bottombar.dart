@@ -1,5 +1,5 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:findrobe_app/providers/bottombar_index_provider.dart';
+import 'package:findrobe_app/providers/others/bottombar_index_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/views/findrobe_page.dart';
 import 'package:findrobe_app/views/postrobe_add_page.dart';
