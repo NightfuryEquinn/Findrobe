@@ -4,12 +4,14 @@ class FindrobePost {
   final String postId;
   final String title;
   final String body;
+  List<String>? imageUrls;
   final String userId;
 
-  const FindrobePost({
+  FindrobePost({
     required this.postId,
     required this.title,
     required this.body,
+    this.imageUrls,
     required this.userId
   });
 

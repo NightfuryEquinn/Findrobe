@@ -10,6 +10,33 @@ class PostRepo {
   final authRepo = AuthRepo();
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
+  Future<List<FindrobePost>> fetchAllPosts() async {
+    try {
+      QuerySnapshot querySnapshot = await postsCollection.get();
+
+      List<FindrobePost> posts = await Future.wait(querySnapshot.docs.map((doc) async {
+        FindrobePost post = FindrobePost.fromMap(doc);
+
+        CollectionReference imageUrlsCollection = doc.reference.collection(imagesInPostCollection);
+        QuerySnapshot imageUrlsSnapshot = await imageUrlsCollection.get();
+
+        List<String> imageUrls = imageUrlsSnapshot.docs.map((imageDoc) {
+          return imageDoc["imageUrl"] as String;
+        }).toList();
+
+        post.imageUrls = imageUrls;
+
+        return post;
+      }).toList());
+
+      return posts;
+    } catch (e) {
+      print("Failed to fetch all posts: $e");
+
+      return [];
+    }
+  }
+
   Future<List<String>> uploadImages(List<File> imageFiles, String postId) async {
     List<String> imageUrls = [];
 
@@ -22,7 +49,7 @@ class PostRepo {
         imageUrls.add(imageUrl);
       }
     } catch (e) {
-      print("Error uploading image: $e");
+      print("Failed to upload image: $e");
 
       return [];
     }
@@ -40,6 +67,7 @@ class PostRepo {
         postId: postRef.id, 
         title: title, 
         body: body, 
+        imageUrls: [],
         userId: authRepo.getCurrentUser()!.uid
       );
 
@@ -57,7 +85,7 @@ class PostRepo {
 
       return true;
     } catch (e) {
-      print("Error creating post: $e");
+      print("Failed to create post: $e");
     }
     
     return false;

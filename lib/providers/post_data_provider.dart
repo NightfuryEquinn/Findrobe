@@ -14,10 +14,12 @@ class PostDataNotifier extends StateNotifier<FindrobePost?> {
       await _postRepo.createPost(title, body, imageFiles);
       return true;
     } catch (e) {
-      print("Error creating psot: $e");
+      print("Error creating post: $e");
       return false;
     }
   }
+
+  // TODO: Single post fetch
 }
 
 final postDataProvider = Provider<PostRepo>((ref) {

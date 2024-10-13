@@ -170,11 +170,7 @@ class _ViewUserPageState extends State<ViewUserPage> {
                             textAlign: TextAlign.left,
                           ),
                           const SizedBox(height: 5.0),
-                          const FindrobePostCard(postId: "1"),
-                          const SizedBox(height: 15.0),
-                          const FindrobePostCard(postId: "2"),
-                          const SizedBox(height: 15.0),
-                          const FindrobePostCard(postId: "3"),
+                          
                         ]
                       )
                     ]

@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class UserDataNotifier extends StateNotifier<FindrobeUser?> {
   final UserRepo _userRepo;
 
-  UserDataNotifier(this._userRepo) : super(null);
+  UserDataNotifier(this._userRepo) : super(null) {
+    fetchUserData();
+  }
 
   // Getter
   FindrobeUser? get findrobeUser => state;

@@ -9,7 +9,6 @@ import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';
 import 'package:findrobe_app/widgets/findrobe_header.dart';
-import 'package:findrobe_app/widgets/findrobe_post_card.dart';
 import 'package:findrobe_app/widgets/findrobe_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,10 +35,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final userDataNotifier = ref.watch(userDataNotifierProvider);
-    final userDataNotifierRead = ref.read(userDataNotifierProvider.notifier);
-
-    final FindrobeUser? user = userDataNotifier;
+    final FindrobeUser? user = ref.watch(userDataNotifierProvider);
 
     if (user != null) {
       userCtrl.text = user.username;
@@ -274,7 +270,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                               alternative: true,
                               buttonColor: AppColors.black,
                               onPressed: () {
-                                userDataNotifierRead.logoutUser();
+                                ref.read(userDataNotifierProvider.notifier).logoutUser();
                                 Navigator.pushReplacementNamed(context, "/login");
                               }
                             ),
@@ -305,11 +301,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                               textAlign: TextAlign.left,
                             ),
                             const SizedBox(height: 5.0),
-                            const FindrobePostCard(postId: "1"),
-                            const SizedBox(height: 15.0),
-                            const FindrobePostCard(postId: "2"),
-                            const SizedBox(height: 15.0),
-                            const FindrobePostCard(postId: "3"),
+
                           ]
                         )
                       ],

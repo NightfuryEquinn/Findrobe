@@ -1,4 +1,5 @@
 import 'package:findrobe_app/global/date_formatter.dart';
+import 'package:findrobe_app/models/post.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/customs/comment_button_block.dart';
@@ -8,11 +9,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FindrobePostCard extends StatelessWidget {
-  final String postId;
+  final FindrobePost post;
 
   const FindrobePostCard({
     super.key,
-    required this.postId
+    required this.post
   });
 
   @override
@@ -89,7 +90,7 @@ class FindrobePostCard extends StatelessWidget {
           ),
           const SizedBox(height: 10.0),
           Text(
-            "Today's Tea Time Wear",
+            post.title,
             style: AppFonts.poiret20
           ),
           const SizedBox(height: 15.0),
@@ -102,12 +103,7 @@ class FindrobePostCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: buildImageGrid(
                   context,
-                  [
-                    "https://www.uniqlo.com/jp/ja/contents/feature/masterpiece/common/img/product/item_03_kv.jpg?240829",
-                    "https://www.uniqlo.com/jp/ja/contents/feature/masterpiece/common/img/product/item_03_kv.jpg?240829",
-                    "https://www.uniqlo.com/jp/ja/contents/feature/masterpiece/common/img/product/item_03_kv.jpg?240829",
-                    "https://www.uniqlo.com/jp/ja/contents/feature/masterpiece/common/img/product/item_03_kv.jpg?240829",
-                  ]
+                  post.imageUrls?.toList() ?? []
                 ),
               )
             ) 
@@ -122,7 +118,7 @@ class FindrobePostCard extends StatelessWidget {
           const SizedBox(height: 10.0),
           Row(
             children: [
-              LikeButtonBlock(postId: postId),
+              LikeButtonBlock(postId: post.postId),
               const SizedBox(width: 25.0),
               const CommentButtonBlock(commentCount: 10)
             ],
