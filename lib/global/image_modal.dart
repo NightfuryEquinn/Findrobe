@@ -26,8 +26,9 @@ void showImageDialog(BuildContext context, String imageUrl) {
                 color: AppColors.grey
               ),
               customSize: MediaQuery.of(context).size,
-              minScale: PhotoViewComputedScale.contained,
+              minScale: PhotoViewComputedScale.contained * 0.8,
               maxScale: PhotoViewComputedScale.covered * 2.0,
+              enablePanAlways: true,
             ) 
           )
         ),

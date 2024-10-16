@@ -7,16 +7,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LikeButtonBlock extends ConsumerWidget {
   final String postId;
+  final String userId;
   
   const LikeButtonBlock({
     super.key,
-    required this.postId
+    required this.postId,
+    required this.userId,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final likeButtonState = ref.watch(likeButtonProvider(postId));
-    final likeButtonNotifier = ref.read(likeButtonProvider(postId).notifier);
 
     return Row(
       children: [
@@ -28,7 +29,7 @@ class LikeButtonBlock extends ConsumerWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(5.0),
             onTap: () {
-              likeButtonNotifier.toggleLike();
+              ref.read(likeButtonProvider(postId).notifier).toggleLike(ref, userId, postId);
             },
             child: Padding(
               padding: const EdgeInsets.all(5.0),

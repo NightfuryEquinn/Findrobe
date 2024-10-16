@@ -1,5 +1,6 @@
 import 'package:findrobe_app/global/date_formatter.dart';
 import 'package:findrobe_app/models/post.dart';
+import 'package:findrobe_app/providers/auth_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/customs/comment_button_block.dart';
@@ -7,8 +8,9 @@ import 'package:findrobe_app/widgets/customs/image_grid.dart';
 import 'package:findrobe_app/widgets/customs/like_button_block.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FindrobePostCard extends StatelessWidget {
+class FindrobePostCard extends ConsumerWidget {
   final FindrobePost post;
 
   const FindrobePostCard({
@@ -17,7 +19,9 @@ class FindrobePostCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(authDataNotifierProvider);
+
     return Container(
       padding: const EdgeInsets.all(15.0),
       decoration: BoxDecoration(
@@ -35,12 +39,19 @@ class FindrobePostCard extends StatelessWidget {
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5.0),
-                  child: Image.network(
-                    "https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg",
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
-                  ),
+                  child: (post.user != null && post.user!.profilePic.isNotEmpty) ? 
+                    Image.network(
+                      post.user!.profilePic,
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.network(
+                      "https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg",
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    )
                 )
               ),
               const SizedBox(width: 20.0),
@@ -48,12 +59,12 @@ class FindrobePostCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Nightfury",
+                    post.user!.username,
                     style: AppFonts.poiret16
                   ),
                   const SizedBox(height: 5.0),
                   Text(
-                    formatDate(dateTime: DateTime.now()),
+                    formatTimestamp(timestamp: post.createdAt),
                     style: AppFonts.forum12
                   )
                 ],
@@ -64,20 +75,23 @@ class FindrobePostCard extends StatelessWidget {
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0))
                 ),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(5.0),
-                  onTap: () {
-                    print("Delete");
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.all(5.0),
-                    child: Icon(
-                      CupertinoIcons.delete,
-                      color: AppColors.white,
-                      size: 20.0,  
-                    ),
+                child: currentUser!.uid == post.userId ?
+                  InkWell(
+                    borderRadius: BorderRadius.circular(5.0),
+                    onTap: () {
+                      print("Delete");
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(5.0),
+                      child: Icon(
+                        CupertinoIcons.delete,
+                        color: AppColors.white,
+                        size: 20.0,  
+                      ),
+                    )
                   )
-                ),
+                :
+                  const SizedBox.shrink()
               )
             ],
           ),
@@ -103,6 +117,7 @@ class FindrobePostCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: buildImageGrid(
                   context,
+                  post,
                   post.imageUrls?.toList() ?? []
                 ),
               )
@@ -118,7 +133,7 @@ class FindrobePostCard extends StatelessWidget {
           const SizedBox(height: 10.0),
           Row(
             children: [
-              LikeButtonBlock(postId: post.postId),
+              LikeButtonBlock(postId: post.postId, userId: post.userId,),
               const SizedBox(width: 25.0),
               const CommentButtonBlock(commentCount: 10)
             ],

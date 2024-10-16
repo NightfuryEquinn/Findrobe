@@ -2,7 +2,6 @@ import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';
 import 'package:findrobe_app/widgets/findrobe_header.dart';
-import 'package:findrobe_app/widgets/findrobe_post_card.dart';
 import 'package:flutter/material.dart';
 
 class ViewUserPage extends StatefulWidget {
@@ -75,6 +74,39 @@ class _ViewUserPageState extends State<ViewUserPage> {
                         ],
                       ),
                       const SizedBox(height: 30.0),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Material(
+                          color: AppColors.beige,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(5.0))
+                          ),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, "/followers");
+                            },
+                            splashColor: AppColors.overlayBlack,
+                            borderRadius: BorderRadius.circular(5.0),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                                child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Total Followers",
+                                    style: AppFonts.forum16black
+                                  ),
+                                  Text(
+                                    "20",
+                                    style: AppFonts.forum16black
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        )
+                      ),
+                      const SizedBox(height: 15.0),
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
@@ -118,23 +150,6 @@ class _ViewUserPageState extends State<ViewUserPage> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 15.0),
-                              SizedBox(
-                                width: double.infinity,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Total Followers",
-                                      style: AppFonts.poiret16
-                                    ),
-                                    Text(
-                                      "20",
-                                      style: AppFonts.poiret16
-                                    )
-                                  ],
-                                ),
-                              )
                             ],
                           )
                         )

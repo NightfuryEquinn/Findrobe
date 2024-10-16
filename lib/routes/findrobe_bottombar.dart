@@ -60,51 +60,6 @@ class FindrobeBottomBar extends ConsumerWidget {
           ),
         ],
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   elevation: 0,
-      //   backgroundColor: AppColors.grey,
-      //   type: BottomNavigationBarType.fixed,
-      //   selectedIconTheme: const IconThemeData(
-      //     size: 36.0,
-      //     color: AppColors.white
-      //   ),
-      //   unselectedIconTheme: const IconThemeData(
-      //     size: 26.0,
-      //     color: Color(0xFF797979)
-      //   ),
-      //   showSelectedLabels: false,
-      //   showUnselectedLabels: false,
-      //   currentIndex: bottomBarIndex,
-      //   onTap: (value) {
-      //     ref.read(bottomBarIndexProvider.notifier).update((state) => value);
-      //   },
-      //   items: const [
-      //     BottomNavigationBarItem(
-      //       icon: Icon(
-      //         CupertinoIcons.home
-      //       ),
-      //       label: "",
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(
-      //         CupertinoIcons.plus_app
-      //       ),
-      //       label: "",
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(
-      //         CupertinoIcons.folder
-      //       ),
-      //       label: "",
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(
-      //         CupertinoIcons.profile_circled
-      //       ),
-      //       label: "",
-      //     ),
-      //   ]
-      // ),
     );
   }
 }

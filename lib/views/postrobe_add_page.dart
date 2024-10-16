@@ -29,18 +29,18 @@ class _PostrobeAddPageState extends ConsumerState<PostrobeAddPage> {
   final TextEditingController contentCtrl = TextEditingController();
 
   // Helper function to calculate hash
-  Future<String> calculateHash(File file) async {
+  Future<String> _calculateHash(File file) async {
     final bytes = await file.readAsBytes();
     return md5.convert(bytes).toString();
   }
 
-  Future<void> pickImages() async {
+  Future<void> _pickImages() async {
     final List<XFile>? pickedImages = await picker.pickMultiImage();
 
     if (pickedImages != null) {
       for (XFile image in pickedImages) {
         File imageFile = File(image.path);
-        String imageHash = await calculateHash(imageFile);
+        String imageHash = await _calculateHash(imageFile);
 
         if (!imageHashes.contains(imageHash)) {
           setState(() {
@@ -54,7 +54,7 @@ class _PostrobeAddPageState extends ConsumerState<PostrobeAddPage> {
 
   void removeImage(int index) async {
     File imageFile = File(imageFiles[index].path);
-    String imageHash = await calculateHash(imageFile);
+    String imageHash = await _calculateHash(imageFile);
 
     setState(() {
       imageFiles.removeAt(index);
@@ -63,9 +63,6 @@ class _PostrobeAddPageState extends ConsumerState<PostrobeAddPage> {
   }
 
   Future<void> _createPost(BuildContext context, WidgetRef ref, String title, String body, List<File> imageFiles) async {
-    final PostDataNotifier postDataNotifierRead = ref.read(postDataNotifierProvider.notifier);
-    final loadingState = ref.read(loadingProvider.notifier);
-
     if (title.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -74,7 +71,7 @@ class _PostrobeAddPageState extends ConsumerState<PostrobeAddPage> {
             "Title is required!",
             style: AppFonts.forum16black,
           ),
-          duration: const Duration(seconds: 4)
+          duration: const Duration(seconds: 3)
         )
       );
 
@@ -89,16 +86,21 @@ class _PostrobeAddPageState extends ConsumerState<PostrobeAddPage> {
             "Content is required!",
             style: AppFonts.forum16black,
           ),
-          duration: const Duration(seconds: 4)
+          duration: const Duration(seconds: 3)
         )
       );
 
       return;
     }
 
-    loadingState.show();
+    ref.read(loadingProvider.notifier).show();
 
-    final bool created = await postDataNotifierRead.createPost(title, body, imageFiles);
+    final bool created = await ref.read(postDataNotifierProvider.notifier)
+      .createPost(
+        title, 
+        body, 
+        imageFiles
+      );
 
     if (created) {      
       ScaffoldMessenger.of(context).showSnackBar(
@@ -108,7 +110,7 @@ class _PostrobeAddPageState extends ConsumerState<PostrobeAddPage> {
             "Post created!",
             style: AppFonts.forum16black,
           ),
-          duration: const Duration(seconds: 4)
+          duration: const Duration(seconds: 3)
         )
       );
 
@@ -121,12 +123,12 @@ class _PostrobeAddPageState extends ConsumerState<PostrobeAddPage> {
             "Failed to create post. Please try again!",
             style: AppFonts.forum16black,
           ),
-          duration: const Duration(seconds: 4)
+          duration: const Duration(seconds: 3)
         )
       );
     }
 
-    loadingState.hide();
+    ref.read(loadingProvider.notifier).hide();
   }
 
   @override
@@ -185,7 +187,7 @@ class _PostrobeAddPageState extends ConsumerState<PostrobeAddPage> {
                               ),
                               child: InkWell(
                                 onTap: () {
-                                  pickImages();
+                                  _pickImages();
                                 },
                                 splashColor: AppColors.overlayBeige,
                                 borderRadius: BorderRadius.circular(10.0),
@@ -261,7 +263,7 @@ class _PostrobeAddPageState extends ConsumerState<PostrobeAddPage> {
                                         ),
                                         child: InkWell(
                                           onTap: () {
-                                            pickImages();
+                                            _pickImages();
                                           },
                                           splashColor: AppColors.overlayBeige,
                                           borderRadius: BorderRadius.circular(10.0),

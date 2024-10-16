@@ -26,7 +26,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 
   Future<void> _registerNewUser(BuildContext context, WidgetRef ref, String email, String password, String confirm, String username) async {
     final authRepo = AuthRepo();
-    final loadingState = ref.read(loadingProvider.notifier);
 
     if (email.isEmpty || password.isEmpty || confirm.isEmpty || username.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -36,7 +35,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
             "All fields are required!",
             style: AppFonts.forum16black,
           ),
-          duration: const Duration(seconds: 4)
+          duration: const Duration(seconds: 3)
         )
       );
 
@@ -51,7 +50,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
             "Use a password more than 8 characters!",
             style: AppFonts.forum16black,
           ),
-          duration: const Duration(seconds: 4)
+          duration: const Duration(seconds: 3)
         )
       );
 
@@ -66,14 +65,14 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
             "Passwords do not match!",
             style: AppFonts.forum16black,
           ),
-          duration: const Duration(seconds: 4)
+          duration: const Duration(seconds: 3)
         )
       );
 
       return;
     }
 
-    loadingState.show();
+    ref.read(loadingProvider.notifier).show();
 
     final user = await authRepo.registerNewUser(email, password, username);
 
@@ -87,7 +86,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
             "Registration failed. Please try again! Maybe due to existing email.",
             style: AppFonts.forum16black,
           ),
-          duration: const Duration(seconds: 4)
+          duration: const Duration(seconds: 3)
         )
       );
     }
@@ -102,12 +101,12 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
             "Please login...",
             style: AppFonts.forum16black,
           ),
-          duration: const Duration(seconds: 4)
+          duration: const Duration(seconds: 3)
         )
       );
     }
 
-    loadingState.hide();
+    ref.read(loadingProvider.notifier).hide();
   } 
 
   @override

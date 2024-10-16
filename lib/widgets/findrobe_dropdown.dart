@@ -26,7 +26,6 @@ class FindrobeDropdown extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedValue = ref.watch(dropdownProvider);
-    final dropdownNotifier = ref.read(dropdownProvider.notifier);
 
     List<DropdownSection<dynamic>> sections = [
       DropdownSection(
@@ -68,7 +67,7 @@ class FindrobeDropdown extends ConsumerWidget {
               style: AppFonts.forum16white,
             ),
             onChanged: (newValue) {
-              dropdownNotifier.selectItem(newValue);
+              ref.read(dropdownProvider.notifier).selectItem(newValue);
             },
             menuMaxHeight: 450.0,
             borderRadius: BorderRadius.circular(10.0),

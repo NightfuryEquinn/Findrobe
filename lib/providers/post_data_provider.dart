@@ -11,15 +11,43 @@ class PostDataNotifier extends StateNotifier<FindrobePost?> {
 
   Future<bool> createPost(String title, String body, List<File> imageFiles) async {
     try {
-      await _postRepo.createPost(title, body, imageFiles);
-      return true;
+      final bool created = await _postRepo.createPost(title, body, imageFiles);
+      return created;
     } catch (e) {
       print("Error creating post: $e");
       return false;
     }
   }
 
-  // TODO: Single post fetch
+  Future<bool> commentPost(String content, String userId, String postId) async {
+    try {
+      final bool commented = await _postRepo.commentPost(content, userId, postId);
+      return commented;
+    } catch (e) {
+      print("Error commenting post: $e");
+      return false;
+    }
+  }
+
+  Future<bool> toggleLike(String userId, String postId) async {
+    try {
+      final bool toggled = await _postRepo.toggleLike(userId, postId);
+      return toggled;
+    } catch (e) {
+      print("Error toggling like: $e");
+      return false;
+    }
+  }
+
+  Future<FindrobePost?> fetchSinglePost(String postId) async {
+    try {
+      FindrobePost? post = await _postRepo.fetchSinglePost(postId);
+      return post;
+    } catch (e) {
+      print("Error fetching single post: $e");
+      return null;
+    }
+  }
 }
 
 final postDataProvider = Provider<PostRepo>((ref) {

@@ -50,7 +50,7 @@ class _ResetPageState extends State<ResetPage> {
                           "Link sent! Check email.",
                           style: AppFonts.forum16black,
                         ), 
-                        duration: const Duration(seconds: 4)
+                        duration: const Duration(seconds: 3)
                       )
                     );
                   },

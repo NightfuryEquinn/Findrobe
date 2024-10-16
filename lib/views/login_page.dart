@@ -25,11 +25,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   Future<void> _signInUser(BuildContext context, WidgetRef ref, String email, String password) async {
     final authRepo = AuthRepo();
-    final loadingState = ref.read(loadingProvider.notifier);
+
+    ref.read(loadingProvider.notifier).show();
 
     if (email.isNotEmpty && password.isNotEmpty) {
       try {
-        loadingState.show();
         User? user = await authRepo.signInWithEmailPassword(email, password);
 
         if (user != null) {
@@ -42,7 +42,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 "Login failed. Please check your credentials!",
                 style: AppFonts.forum16black,
               ),
-              duration: const Duration(seconds: 4)
+              duration: const Duration(seconds: 3)
             )
           );
         }
@@ -57,12 +57,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 "Please press login again...",
                 style: AppFonts.forum16black,
               ),
-              duration: const Duration(seconds: 4)
+              duration: const Duration(seconds: 3)
             )
           );
         }
-
-        loadingState.hide();
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -74,10 +72,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             duration: const Duration(seconds: 2)
           )
         );
-
-        loadingState.hide();
       }
     }
+
+    ref.read(loadingProvider.notifier).hide();
   }
 
   @override

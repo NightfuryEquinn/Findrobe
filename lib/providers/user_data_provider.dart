@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:findrobe_app/firebase/user_repo.dart';
 import 'package:findrobe_app/models/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,15 +11,22 @@ class UserDataNotifier extends StateNotifier<FindrobeUser?> {
     fetchUserData();
   }
 
-  // Getter
-  FindrobeUser? get findrobeUser => state;
-
   Future<void> fetchUserData() async {
     try {
       final user = await _userRepo.fetchUserData();
       state = user;
     } catch (e) {
       print("Error fetching user data: $e");
+    }
+  }
+
+  Future<bool> updateProfile(String username, dynamic profilePic, String email) async {
+    try {
+      await _userRepo.updateProfile(username, profilePic, email);
+      return true;
+    } catch (e) {
+      print("Error updating profile: $e");
+      return false;
     }
   }
 

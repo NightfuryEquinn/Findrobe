@@ -2,13 +2,18 @@ import 'dart:io';
 
 import 'package:findrobe_app/global/date_formatter.dart';
 import 'package:findrobe_app/global/loading_overlay.dart';
+import 'package:findrobe_app/models/post.dart';
 import 'package:findrobe_app/models/user.dart';
+import 'package:findrobe_app/providers/auth_data_provider.dart';
 import 'package:findrobe_app/providers/others/add_image_provider.dart';
+import 'package:findrobe_app/providers/others/loading_provider.dart';
+import 'package:findrobe_app/providers/posts_data_provider.dart';
 import 'package:findrobe_app/providers/user_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';
 import 'package:findrobe_app/widgets/findrobe_header.dart';
+import 'package:findrobe_app/widgets/findrobe_post_card.dart';
 import 'package:findrobe_app/widgets/findrobe_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,93 +28,138 @@ class ProfilePage extends ConsumerStatefulWidget {
 }
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
+  final ImagePicker picker = ImagePicker();
   final TextEditingController userCtrl = TextEditingController();
   final TextEditingController emailCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+
+    final currentUser = ref.read(authDataNotifierProvider);
     
     Future.microtask(() => ref.read(userDataNotifierProvider.notifier).fetchUserData());
+    Future.microtask(() => ref.read(postsDataNotifierProvider.notifier).fetchPostByUserId(currentUser!.uid));
+  }
+
+  Future<void> _pickImage(WidgetRef ref, ImageSource source) async {
+    final pickedFile = await picker.pickImage(source: source);
+
+    if (pickedFile != null) {
+      ref.read(addImageProvider.notifier).state = File(pickedFile.path);
+    }
+  }
+
+  void showImageSourceDialog(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      backgroundColor: AppColors.white,
+      context: context, 
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10.0), 
+          topRight: Radius.circular(10.0)
+        )
+      ),
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10.0), 
+                    topRight: Radius.circular(10.0)
+                  ),
+                ),
+                leading: const Icon(
+                  CupertinoIcons.camera,
+                  size: 24.0,
+                  color: AppColors.black,
+                ),
+                title: Text(
+                  "Camera",
+                  style: AppFonts.forum16black,
+                ),
+                onTap: () {
+                  _pickImage(ref, ImageSource.camera);
+                  Navigator.of(context).pop();
+                }
+              ),
+              ListTile(
+                leading: const Icon(
+                  CupertinoIcons.photo,
+                  size: 24.0,
+                  color: AppColors.black,
+                ),
+                title: Text(
+                  "Gallery",
+                  style: AppFonts.forum16black,
+                ),
+                onTap: () {
+                  _pickImage(ref, ImageSource.gallery);
+                  Navigator.of(context).pop();
+                }
+              ),
+            ],
+          )
+        );
+      }
+    );
+  }
+
+  Future<void> _updateProfile(BuildContext context, WidgetRef ref, String username, dynamic profilePic, String email) async {
+    ref.read(loadingProvider.notifier).show();
+
+    final bool updated = await ref.read(userDataNotifierProvider.notifier)
+      .updateProfile(
+        username, 
+        profilePic, 
+        email
+      );
+
+    if (updated) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.beige,
+          content: Text(
+            "Profile updated!",
+            style: AppFonts.forum16black,
+          ),
+          duration: const Duration(seconds: 3)
+        )
+      );
+
+      Navigator.of(context).pop();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.beige,
+          content: Text(
+            "Failed to update profile. Please try again!",
+            style: AppFonts.forum16black,
+          ),
+          duration: const Duration(seconds: 3)
+        )
+      );
+    }
+
+    ref.watch(addImageProvider.notifier).state = null;
+
+    ref.read(loadingProvider.notifier).hide();
   }
 
   @override
   Widget build(BuildContext context) {
     final FindrobeUser? user = ref.watch(userDataNotifierProvider);
+    final List<FindrobePost> userPosts = ref.watch(postsDataNotifierProvider).userPosts;
 
     if (user != null) {
       userCtrl.text = user.username;
       emailCtrl.text = user.email;
     }
    
-    final ImagePicker picker = ImagePicker();
     final newProfilePic = ref.watch(addImageProvider);
     
-    Future<void> pickImage(WidgetRef ref, ImageSource source) async {
-      final pickedFile = await picker.pickImage(source: source);
-
-      if (pickedFile != null) {
-        ref.read(addImageProvider.notifier).state = File(pickedFile.path);
-      }
-    }
-
-    void showImageSourceDialog(BuildContext context, WidgetRef ref) {
-      showModalBottomSheet(
-        backgroundColor: AppColors.white,
-        context: context, 
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10.0), 
-            topRight: Radius.circular(10.0)
-          )
-        ),
-        builder: (BuildContext context) {
-          return SafeArea(
-            child: Wrap(
-              children: <Widget>[
-                ListTile(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10.0), 
-                      topRight: Radius.circular(10.0)
-                    ),
-                  ),
-                  leading: const Icon(
-                    CupertinoIcons.camera,
-                    size: 24.0,
-                    color: AppColors.black,
-                  ),
-                  title: Text(
-                    "Camera",
-                    style: AppFonts.forum16black,
-                  ),
-                  onTap: () {
-                    pickImage(ref, ImageSource.camera);
-                    Navigator.of(context).pop();
-                  }
-                ),
-                ListTile(
-                  leading: const Icon(
-                    CupertinoIcons.photo,
-                    size: 24.0,
-                    color: AppColors.black,
-                  ),
-                  title: Text(
-                    "Gallery",
-                    style: AppFonts.forum16black,
-                  ),
-                  onTap: () {
-                    pickImage(ref, ImageSource.gallery);
-                    Navigator.of(context).pop();
-                  }
-                ),
-              ],
-            )
-          );
-        }
-      );
-    }
-
     return Scaffold(
       backgroundColor: AppColors.grey,
       body: user == null ?
@@ -185,6 +235,39 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           ],
                         ),
                         const SizedBox(height: 30.0),
+                        SizedBox(
+                          width: double.infinity,
+                          child: Material(
+                            color: AppColors.beige,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(5.0))
+                            ),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pushNamed(context, "/followers");
+                              },
+                              splashColor: AppColors.overlayBlack,
+                              borderRadius: BorderRadius.circular(5.0),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                                  child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Total Followers",
+                                      style: AppFonts.forum16black
+                                    ),
+                                    Text(
+                                      "20",
+                                      style: AppFonts.forum16black
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          )
+                        ),
+                        const SizedBox(height: 15.0),
                         Container(
                           width: double.infinity,
                           decoration: BoxDecoration(
@@ -205,7 +288,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                         style: AppFonts.poiret16
                                       ),
                                       Text(
-                                        "20",
+                                        "${userPosts.length}",
                                         style: AppFonts.poiret16
                                       )
                                     ],
@@ -228,23 +311,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                     ],
                                   ),
                                 ),
-                                const SizedBox(height: 15.0),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Total Followers",
-                                        style: AppFonts.poiret16
-                                      ),
-                                      Text(
-                                        "20",
-                                        style: AppFonts.poiret16
-                                      )
-                                    ],
-                                  ),
-                                )
                               ],
                             )
                           )
@@ -278,7 +344,23 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                               width: 150.0,
                               buttonText: "Update", 
                               onPressed: () {
-
+                                if (newProfilePic == null) {
+                                  _updateProfile(
+                                    context, 
+                                    ref, 
+                                    userCtrl.text, 
+                                    user.profilePic, 
+                                    emailCtrl.text
+                                  );
+                                } else {
+                                  _updateProfile(
+                                    context, 
+                                    ref, 
+                                    userCtrl.text, 
+                                    newProfilePic, 
+                                    emailCtrl.text
+                                  );
+                                }
                               }
                             )
                           ],
@@ -301,7 +383,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                               textAlign: TextAlign.left,
                             ),
                             const SizedBox(height: 5.0),
-
+                            for (FindrobePost userPost in userPosts)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 15.0),
+                                child: FindrobePostCard(post: userPost)
+                              )
                           ]
                         )
                       ],

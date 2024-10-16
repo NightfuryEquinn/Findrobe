@@ -24,11 +24,12 @@ class FindrobeTextfield extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          labelText,
-          style: AppFonts.poiret16,
-          textAlign: TextAlign.left,
-        ),
+        if (labelText.isNotEmpty)
+          Text(
+            labelText,
+            style: AppFonts.poiret16,
+            textAlign: TextAlign.left,
+          ),
         const SizedBox(height: 5.0),
         TextFormField(
           controller: controller,

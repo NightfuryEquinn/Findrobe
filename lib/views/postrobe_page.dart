@@ -4,6 +4,7 @@ import 'package:findrobe_app/providers/posts_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/widgets/findrobe_header.dart';
 import 'package:findrobe_app/widgets/findrobe_post_card.dart';
+import 'package:findrobe_app/widgets/postrobe_empty.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,9 +23,13 @@ class _PostrobePageState extends ConsumerState<PostrobePage> {
     Future.microtask(() => ref.read(postsDataNotifierProvider.notifier).fetchAllPosts());
   }
 
+  Future<void> _refreshPosts() async {
+    await ref.read(postsDataNotifierProvider.notifier).fetchAllPosts();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List<FindrobePost>? posts = ref.watch(postsDataNotifierProvider);
+    final List<FindrobePost>? posts = ref.watch(postsDataNotifierProvider).allPosts;
 
     return Scaffold(
       backgroundColor: AppColors.grey,
@@ -39,18 +44,26 @@ class _PostrobePageState extends ConsumerState<PostrobePage> {
                 const FindrobeHeader(headerTitle: "Postrobes"),
                 const SizedBox(height: 30.0),
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: posts.map((post) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 15.0),
-                          child: FindrobePostCard(post: post)
-                        );
-                      }).toList(),
+                  child: RefreshIndicator(
+                    color: AppColors.black,
+                    backgroundColor: AppColors.beige,
+                    onRefresh: _refreshPosts,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: posts.isEmpty ?
+                        const PostrobeEmpty(labelText: "No posts available...") : 
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: posts.map((post) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 15.0),
+                              child: FindrobePostCard(post: post)
+                            );
+                          }).toList(),
+                        ),
                     ),
-                  ),
+                  )
                 ),
               ],
             ),

@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PostrobeComment {
-  final int commentId;
+  final String commentId;
   final String content;
-  final int userId;
-  final int postId;
+  final String userId;
+  final String postId;
 
   const PostrobeComment({
     required this.commentId,

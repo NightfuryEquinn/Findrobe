@@ -6,7 +6,7 @@ import 'package:findrobe_app/routes/findrobe_bottombar.dart';
 import 'package:findrobe_app/views/collection_add_page.dart';
 import 'package:findrobe_app/views/collection_page.dart';
 import 'package:findrobe_app/views/collection_single_page.dart';
-import 'package:findrobe_app/views/findrobe_page.dart';
+import 'package:findrobe_app/views/findrobe_followers_page.dart';
 import 'package:findrobe_app/views/login_page.dart';
 import 'package:findrobe_app/views/postrobe_add_page.dart';
 import 'package:findrobe_app/views/postrobe_page.dart';
@@ -64,8 +64,8 @@ class MainApp extends ConsumerWidget {
           case "/collection_single":
             page = const CollectionSinglePage();
             break;
-          case "/findrobe":
-            page = const FindrobePage();
+          case "/followers":
+            page = const FindrobeFollowersPage();
             break;
           case "/login":
             page = const LoginPage();
@@ -77,7 +77,11 @@ class MainApp extends ConsumerWidget {
             page = const PostrobePage();
             break;
           case "/postrobe_single":
-            page = const PostrobeSinglePage();
+            final PostrobeSingleArgs args = settings.arguments as PostrobeSingleArgs;
+
+            page = PostrobeSinglePage(
+              args: args,
+            );
             break;
           case "/profile":
             page = const ProfilePage();
@@ -100,7 +104,6 @@ class MainApp extends ConsumerWidget {
 
         return FadeRoute(page: page);
       },
-       
     );
   }
 }

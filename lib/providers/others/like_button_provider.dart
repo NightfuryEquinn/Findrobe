@@ -1,3 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:findrobe_app/constants/firebase_collection.dart';
+import 'package:findrobe_app/providers/auth_data_provider.dart';
+import 'package:findrobe_app/providers/post_data_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LikeButtonState {
@@ -11,26 +15,63 @@ class LikeButtonState {
 }
 
 class LikeButtonNotifier extends StateNotifier<LikeButtonState> {
-  LikeButtonNotifier(int initialCount) :  super(
+  final String postId;
+  final String userId;
+
+  LikeButtonNotifier({
+    required this.postId,
+    required this.userId,
+    required int initialCount,
+  }) :  super(
     LikeButtonState(
       isLiked: false,
       likeCount: initialCount
     )
-  );
+  ) {
+    _checkIfLiked();
+  }
 
-  void toggleLike() {
-    state = LikeButtonState(
-      isLiked: !state.isLiked,
-      likeCount: state.isLiked ? state.likeCount - 1 : state.likeCount + 1
-    );
+  Future<void> _checkIfLiked() async {
+    DocumentSnapshot likeDoc = await postsCollection
+      .doc(postId)
+      .collection(likedInPostCollection)
+      .doc(userId)
+      .get();
+    
+    if (likeDoc.exists) {
+      state = LikeButtonState(isLiked: true, likeCount: state.likeCount);
+    }
+  }
+
+  Future<void> toggleLike(WidgetRef ref, String userId, String postId) async {
+    await ref.read(postDataNotifierProvider.notifier).toggleLike(userId, postId);
+
+    if (state.isLiked) {
+      state = LikeButtonState(isLiked: false, likeCount: state.likeCount - 1);
+    } else {
+      state = LikeButtonState(isLiked: true, likeCount: state.likeCount + 1);
+    }
   }
 }
 
 final likeButtonProvider = StateNotifierProvider.family<LikeButtonNotifier, LikeButtonState, String>((ref, postId) {
-  int initialCount = ref.read(initialLikeCountProvider(postId));
-  return LikeButtonNotifier(initialCount);
+  final currentUser = ref.watch(authDataNotifierProvider);
+  final initialCount = ref.watch(initialLikeCountProvider(postId))
+    .maybeWhen(
+      data: (likeCount) => likeCount,
+      orElse: () => 0
+    );
+  
+  return LikeButtonNotifier(
+    postId: postId,
+    userId: currentUser!.uid,
+    initialCount: initialCount
+  );
 });
 
-final initialLikeCountProvider = Provider.family<int, String>((ref, postId) {
-  return 10;
+final initialLikeCountProvider = FutureProvider.family<int, String>((ref, postId) async {
+  CollectionReference likesRef = postsCollection.doc(postId).collection(likedInPostCollection);
+  QuerySnapshot likesSnapshot = await likesRef.get();
+
+  return likesSnapshot.docs.length;
 });
