@@ -9,7 +9,11 @@ import 'package:flutter/material.dart';
 List<Widget> buildImageGrid(BuildContext context, FindrobePost post, List<String> imageUrls) {
   List<Widget> imageWidgets = [];
 
-  if (imageUrls.length == 1) {
+  if (imageUrls.isEmpty) {
+    imageWidgets.add(
+      _buildClickableImageOverlay(context, post, "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=", "")
+    );
+  } else if (imageUrls.length == 1) {
     imageWidgets.add(
       _buildClickableImageOverlay(context, post, imageUrls[0], "")
     );
@@ -25,7 +29,7 @@ List<Widget> buildImageGrid(BuildContext context, FindrobePost post, List<String
     );
   } else {
     for (int i = 0; i < imageUrls.length && i < 3; i++) {
-      if (i == 2 && imageUrls.length > 3) {
+      if (i == 2 && imageUrls.length >= 3) {
         imageWidgets.add(
           _buildClickableImageOverlay(context, post, imageUrls[i], "+${imageUrls.length - 3}")
         );

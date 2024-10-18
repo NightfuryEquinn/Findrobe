@@ -39,13 +39,32 @@ class PostDataNotifier extends StateNotifier<FindrobePost?> {
     }
   }
 
-  Future<FindrobePost?> fetchSinglePost(String postId) async {
+  Future<void> fetchSinglePost(String postId) async {
     try {
       FindrobePost? post = await _postRepo.fetchSinglePost(postId);
-      return post;
+      state = post;
     } catch (e) {
       print("Error fetching single post: $e");
-      return null;
+    }
+  }
+
+  Future<bool> deletePost(String postId) async {
+    try {
+      final bool deleted = await _postRepo.deletePost(postId);
+      return deleted;
+    } catch (e) {
+      print("Error deleting post: $e");
+      return false;
+    }
+  }
+
+  Future<bool> deleteComment(String postId, String commentId) async {
+    try {
+      final bool deleted = await _postRepo.deleteComment(postId, commentId);
+      return deleted;
+    } catch (e) {
+      print("Error delete comment: $e");
+      return false;
     }
   }
 }

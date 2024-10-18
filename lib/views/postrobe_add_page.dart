@@ -4,6 +4,7 @@ import 'package:crypto/crypto.dart';
 import 'package:findrobe_app/global/loading_overlay.dart';
 import 'package:findrobe_app/providers/others/loading_provider.dart';
 import 'package:findrobe_app/providers/post_data_provider.dart';
+import 'package:findrobe_app/providers/posts_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';
@@ -103,6 +104,8 @@ class _PostrobeAddPageState extends ConsumerState<PostrobeAddPage> {
       );
 
     if (created) {      
+      await ref.read(postsDataNotifierProvider.notifier).fetchAllPosts();
+      
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: AppColors.beige,

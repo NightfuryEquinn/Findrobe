@@ -27,6 +27,15 @@ class PostsDataNotifier extends StateNotifier<PostsDataState> {
       print("Error fetching posts of user: $e");
     }
   }
+
+  Future<void> fetchCommentCountByUserId(String userId) async {
+    try {
+      final int comments = await _postRepo.fetchCommentCountByUserId(userId);
+      state = state.copyWith(userCommentCount: comments);
+    } catch (e) {
+      print("Error fetching user comment count: $e");
+    }
+  }
 }
 
 final postsDataProvider = Provider<PostRepo>((ref) {

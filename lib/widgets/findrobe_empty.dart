@@ -2,10 +2,10 @@ import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:flutter/cupertino.dart';
 
-class PostrobeEmpty extends StatelessWidget {
+class FindrobeEmpty extends StatelessWidget {
   final String labelText;
 
-  const PostrobeEmpty({
+  const FindrobeEmpty({
     super.key,
     required this.labelText
   });

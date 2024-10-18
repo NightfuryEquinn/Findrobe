@@ -11,6 +11,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 class PostRepo {
   final authRepo = AuthRepo();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   Future<FindrobePost?> fetchSinglePost(String postId) async {
@@ -25,6 +26,7 @@ class PostRepo {
       List<PostrobeComment> comments = commentsSnapshot.docs.map((commentDoc) {
         return PostrobeComment.fromMap(commentDoc);
       }).toList();
+      comments.sort((a, b) => b.commentedAt.compareTo(a.commentedAt));
 
       List<PostrobeLike> likes = likesSnapshot.docs.map((likeDoc) {
         return PostrobeLike.fromMap(likeDoc);
@@ -64,8 +66,20 @@ class PostRepo {
 
         post.user = FindrobeUser.fromMap(userSnapshot);
 
+        CollectionReference commentsCollection = doc.reference.collection(commentsInPostCollection);
+        QuerySnapshot commentsSnapshot = await commentsCollection.get();
+
+        List<PostrobeComment> comments = commentsSnapshot.docs.map((commentDoc) {
+          return PostrobeComment.fromMap(commentDoc);
+        }).toList();
+        comments.sort((a, b) => b.commentedAt.compareTo(a.commentedAt));
+
+        post.comments = comments;
+
         return post;
       }).toList());
+
+      posts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
       return posts;
     } catch (e) {
@@ -101,14 +115,49 @@ class PostRepo {
 
         post.user = FindrobeUser.fromMap(userSnapshot);
 
+        CollectionReference commentsCollection = doc.reference.collection(commentsInPostCollection);
+        QuerySnapshot commentsSnapshot = await commentsCollection.get();
+
+        List<PostrobeComment> comments = commentsSnapshot.docs.map((commentDoc) {
+          return PostrobeComment.fromMap(commentDoc);
+        }).toList();
+        comments.sort((a, b) => b.commentedAt.compareTo(a.commentedAt));
+
+        post.comments = comments;
+
         return post;
       }).toList());
+
+      posts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
       return posts;
     } catch (e) {
       print("Failed to fetch user posts: $e");
 
       return [];
+    }
+  }
+
+  Future<int> fetchCommentCountByUserId(String userId) async {
+    try {
+      QuerySnapshot postSnapshot = await postsCollection.get();
+
+      int commentCount = 0;
+
+      for (QueryDocumentSnapshot postDoc in postSnapshot.docs) {
+        CollectionReference commentsCollection = postDoc.reference.collection(commentsInPostCollection);
+
+        QuerySnapshot commentsSnapshot = await commentsCollection
+          .where("userId", isEqualTo: userId)
+          .get();
+
+        commentCount += commentsSnapshot.size;  
+    }
+      
+      return commentCount;
+    } catch (e) {
+      print("Failed to fetch user comment count: $e");
+      return 0;
     }
   }
 
@@ -176,12 +225,14 @@ class PostRepo {
         commentId: commentRef.id,
         content: content,
         userId: userId,
-        postId: postId
+        postId: postId,
+        commentedAt: Timestamp.fromDate(DateTime.now())
       );
 
       await postRef
         .collection(commentsInPostCollection)
-        .add(comment.toMap());
+        .doc(commentRef.id)
+        .set(comment.toMap());
 
       return true;
     } catch (e) {
@@ -194,25 +245,61 @@ class PostRepo {
     try {
       DocumentReference postRef = postsCollection.doc(postId);
       CollectionReference likeRef = postRef.collection(likedInPostCollection);
-
-      DocumentSnapshot likeSnapshot = await likeRef.doc(userId).get();
+      DocumentReference likeDoc = likeRef.doc(userId);
+      DocumentSnapshot likeSnapshot = await likeDoc.get();
 
       if (likeSnapshot.exists) {
-        await likeRef.doc(userId).delete();
+        await likeDoc.delete();
       } else {
-        DocumentReference newLikeRef = likeRef.doc();
-
         PostrobeLike like = PostrobeLike(
           userId: userId, 
           postId: postId
         );
 
-        await newLikeRef.set(like.toMap());
+        await likeDoc.set(like.toMap());
       }
 
       return true;
     } catch (e) {
       print("Failed to toggle like: $e");
+      return false;
+    }
+  }
+
+  Future<bool> deletePost(String postId) async {
+    try {
+      DocumentReference postRef = postsCollection.doc(postId);
+      CollectionReference commentsCollection = postRef.collection(commentsInPostCollection);
+      QuerySnapshot commentsSnapshot = await commentsCollection.get();
+
+      for (QueryDocumentSnapshot commentDoc in commentsSnapshot.docs) {
+        await commentDoc.reference.delete();
+      }
+
+      await postRef.delete();
+
+      return true;
+    } catch (e) {
+      print("Failed to delete post: $e");
+      return false;
+    }
+  }
+
+  Future<bool> deleteComment(String postId, String commentId) async {
+    try {
+      DocumentReference commentRef = postsCollection
+        .doc(postId)
+        .collection(commentsInPostCollection)
+        .doc(commentId);
+
+      if (commentRef.id == commentId) {
+        await commentRef.delete();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("Failed to delete comment: $e");
       return false;
     }
   }

@@ -1,31 +1,25 @@
+import 'package:collection/collection.dart';
+import 'package:findrobe_app/providers/posts_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CommentButtonBlock extends StatefulWidget {
-  final int commentCount;
+class CommentButtonBlock extends ConsumerWidget {
+  final String postId;
 
   const CommentButtonBlock({
     super.key,
-    required this.commentCount
+    required this.postId
   });
 
   @override
-  State<CommentButtonBlock> createState() => _CommentButtonBlockState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = ref.watch(postsDataNotifierProvider.select(
+      (state) => state.allPosts.firstWhereOrNull((p) => p.postId == postId)
+    ));
 
-class _CommentButtonBlockState extends State<CommentButtonBlock> {
-  late int commentCount;
-
-  @override
-  void initState() {
-    super.initState();
-    commentCount = widget.commentCount;
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Row(
       children: [
         Material(
@@ -50,7 +44,7 @@ class _CommentButtonBlockState extends State<CommentButtonBlock> {
         ),
         const SizedBox(width: 10.0),
         Text(
-          "13",
+          "${post?.comments?.length ?? 'NaN'}",
           style: AppFonts.poiret12
         )
       ],

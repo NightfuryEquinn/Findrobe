@@ -33,6 +33,7 @@ class FindrobePost {
       "body": body,
       "createdAt": createdAt,
       "userId": userId,
+      "comments": comments
     };
   }
 

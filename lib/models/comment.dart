@@ -1,16 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:findrobe_app/models/user.dart';
 
 class PostrobeComment {
   final String commentId;
   final String content;
   final String userId;
   final String postId;
+  final Timestamp commentedAt;
+  FindrobeUser? user;
 
-  const PostrobeComment({
+  PostrobeComment({
     required this.commentId,
     required this.content,
     required this.userId,
-    required this.postId
+    required this.postId,
+    required this.commentedAt,
+    this.user
   });
 
   Map<String, dynamic> toMap() {
@@ -18,7 +23,8 @@ class PostrobeComment {
       "commentId": commentId,
       "content": content,
       "userId": userId,
-      "postId": postId
+      "postId": postId,
+      "commentedAt": commentedAt
     };
   }
 
@@ -29,7 +35,8 @@ class PostrobeComment {
       commentId: map["commentId"],
       content: map["content"],
       userId: map["userId"],
-      postId: map["postId"]
+      postId: map["postId"],
+      commentedAt: map["commentedAt"]
     );
   }
 }
