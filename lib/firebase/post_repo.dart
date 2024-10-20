@@ -23,9 +23,16 @@ class PostRepo {
       DocumentSnapshot postSnapshot = await postRef.get();
       FindrobePost thePost = FindrobePost.fromMap(postSnapshot);
 
-      List<PostrobeComment> comments = commentsSnapshot.docs.map((commentDoc) {
-        return PostrobeComment.fromMap(commentDoc);
-      }).toList();
+      List<PostrobeComment> comments = [];
+      for (var commentDoc in commentsSnapshot.docs) {
+        String userId = commentDoc["userId"];
+        DocumentSnapshot userDoc = await usersCollection.doc(userId).get();
+        
+        PostrobeComment comment = PostrobeComment.fromMap(commentDoc);
+        comment.user = FindrobeUser.fromMap(userDoc);
+
+        comments.add(comment);
+      }
       comments.sort((a, b) => b.commentedAt.compareTo(a.commentedAt));
 
       List<PostrobeLike> likes = likesSnapshot.docs.map((likeDoc) {
@@ -245,10 +252,19 @@ class PostRepo {
     try {
       DocumentReference postRef = postsCollection.doc(postId);
       CollectionReference likeRef = postRef.collection(likedInPostCollection);
-      DocumentReference likeDoc = likeRef.doc(userId);
-      DocumentSnapshot likeSnapshot = await likeDoc.get();
 
-      if (likeSnapshot.exists) {
+      QuerySnapshot likeSnapshot = await likeRef.get();
+      List<PostrobeLike> currentLikes = likeSnapshot.docs.map((likeDoc) {
+        return PostrobeLike.fromMap(likeDoc);
+      }).toList();
+
+      PostrobeLike? existingLike = currentLikes.firstWhere(
+        (like) => like.userId == userId,
+        orElse: () => const PostrobeLike(userId: "", postId: "")
+      );
+
+      if (existingLike.userId == userId) {
+        DocumentReference likeDoc = likeRef.doc(existingLike.userId);
         await likeDoc.delete();
       } else {
         PostrobeLike like = PostrobeLike(
@@ -256,7 +272,7 @@ class PostRepo {
           postId: postId
         );
 
-        await likeDoc.set(like.toMap());
+        await likeRef.doc(userId).set(like.toMap());
       }
 
       return true;

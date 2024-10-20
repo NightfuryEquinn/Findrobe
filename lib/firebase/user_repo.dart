@@ -11,6 +11,36 @@ class UserRepo {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
+  Future<bool> followUser(String currentUserId, String followUserId) async {
+    try {
+      await usersCollection
+        .doc(followUserId)
+        .collection(followersInUserCollection)
+        .doc(currentUserId)
+        .set({});
+
+      return true;
+    } catch (e) {
+      print("Failed to follow user: $e");
+      return false;
+    }
+  }
+
+  Future<bool> unfollowUser(String currentUserId, String followUserId) async {
+    try {
+      await usersCollection
+        .doc(followUserId)
+        .collection(followersInUserCollection)
+        .doc(currentUserId)
+        .delete();
+
+      return true;
+    } catch (e) {
+      print("Failed to unfollow user: $e");
+      return false;
+    }
+  }
+
   Future<FindrobeUser?> fetchUserData() async {
     final user = _authRepo.getCurrentUser();
 
@@ -30,7 +60,23 @@ class UserRepo {
       }
     } catch (e) {
       print("Failed to fetch user data: $e");
+      return null;
+    }
+  }
 
+  Future<FindrobeUser?> fetchViewUserData(String userId) async {
+    try {
+      DocumentSnapshot doc = await usersCollection
+        .doc(userId)
+        .get();
+      
+      if (doc.exists) {
+        return FindrobeUser.fromMap(doc);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print("Failed to fetch view user data: $e");
       return null;
     }
   }

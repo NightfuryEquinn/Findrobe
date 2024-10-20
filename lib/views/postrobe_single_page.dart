@@ -3,6 +3,7 @@ import 'package:findrobe_app/global/date_formatter.dart';
 import 'package:findrobe_app/global/image_modal.dart';
 import 'package:findrobe_app/models/comment.dart';
 import 'package:findrobe_app/models/post.dart';
+import 'package:findrobe_app/providers/auth_data_provider.dart';
 import 'package:findrobe_app/providers/others/loading_provider.dart';
 import 'package:findrobe_app/providers/post_data_provider.dart';
 import 'package:findrobe_app/providers/posts_data_provider.dart';
@@ -92,6 +93,7 @@ class _PostrobePageState extends ConsumerState<PostrobeSinglePage> {
   Widget build(BuildContext context) {
     final TextEditingController commentCtrl = TextEditingController();
 
+    final currentUser = ref.watch(authDataNotifierProvider);
     final FindrobePost? thePost = ref.watch(postDataNotifierProvider);
 
     return Scaffold(
@@ -208,7 +210,7 @@ class _PostrobePageState extends ConsumerState<PostrobeSinglePage> {
                               const SizedBox(height: 10.0),
                               Row(
                                 children: [
-                                  LikeButtonBlock(postId: thePost.postId, userId: thePost.userId),
+                                  LikeButtonBlock(postId: thePost.postId, userId: currentUser!.uid),
                                   const SizedBox(width: 25.0),
                                   CommentButtonBlock(postId: thePost.postId)
                                 ],
@@ -226,7 +228,7 @@ class _PostrobePageState extends ConsumerState<PostrobeSinglePage> {
                               context, 
                               ref, 
                               commentCtrl.text, 
-                              thePost.userId, 
+                              currentUser!.uid, 
                               thePost.postId
                             );
 
@@ -241,7 +243,7 @@ class _PostrobePageState extends ConsumerState<PostrobeSinglePage> {
 
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 15.0),
-                              child: FindrobeComment(comment: comment, user: widget.args.post.user, levelCount: thePost.comments!.length - 1 - index)
+                              child: FindrobeComment(comment: comment, user: comment.user, levelCount: thePost.comments!.length - 1 - index)
                             );
                           }
                         ), 

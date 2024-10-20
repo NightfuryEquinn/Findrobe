@@ -1,5 +1,5 @@
-import 'package:findrobe_app/firebase/auth_repo.dart';
 import 'package:findrobe_app/global/loading_overlay.dart';
+import 'package:findrobe_app/providers/auth_data_provider.dart';
 import 'package:findrobe_app/providers/others/loading_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
@@ -24,13 +24,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   bool workAround = false;
 
   Future<void> _signInUser(BuildContext context, WidgetRef ref, String email, String password) async {
-    final authRepo = AuthRepo();
-
     ref.read(loadingProvider.notifier).show();
 
     if (email.isNotEmpty && password.isNotEmpty) {
       try {
-        User? user = await authRepo.signInWithEmailPassword(email, password);
+        User? user = await ref.read(authDataNotifierProvider.notifier).signInUser(email, password);
 
         if (user != null) {
           Navigator.pushReplacementNamed(context, "/home");

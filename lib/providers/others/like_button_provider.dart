@@ -1,18 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:findrobe_app/constants/firebase_collection.dart';
+import 'package:findrobe_app/constants/states.dart';
 import 'package:findrobe_app/providers/auth_data_provider.dart';
 import 'package:findrobe_app/providers/post_data_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-class LikeButtonState {
-  final bool isLiked;
-  final int likeCount;
-
-  LikeButtonState({
-    required this.isLiked,
-    required this.likeCount
-  });
-}
 
 class LikeButtonNotifier extends StateNotifier<LikeButtonState> {
   final String postId;
@@ -22,7 +13,7 @@ class LikeButtonNotifier extends StateNotifier<LikeButtonState> {
     required this.postId,
     required this.userId,
     required int initialCount,
-  }) :  super(
+  }) : super(
     LikeButtonState(
       isLiked: false,
       likeCount: initialCount

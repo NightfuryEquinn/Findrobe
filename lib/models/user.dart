@@ -7,6 +7,8 @@ class FindrobeUser {
   final String email;
   final Timestamp dateRegistered;
   final String profilePic;
+  final String role;
+  final bool isRestricted;
 
   const FindrobeUser({
     required this.userId,
@@ -15,6 +17,8 @@ class FindrobeUser {
     required this.email,
     required this.dateRegistered,
     required this.profilePic,
+    this.role = "user",
+    this.isRestricted = false
   });
 
   Map<String, dynamic> toMap() {
@@ -24,7 +28,9 @@ class FindrobeUser {
       "password": password,
       "email": email,
       "dateRegistered": dateRegistered,
-      "profilePic": profilePic
+      "profilePic": profilePic,
+      "role": role,
+      "isRestricted": isRestricted
     };
   }
 
@@ -37,7 +43,9 @@ class FindrobeUser {
       password: map["password"], 
       email: map["email"], 
       dateRegistered: map["dateRegistered"], 
-      profilePic: map["profilePic"]
+      profilePic: map["profilePic"],
+      role: map["role"],
+      isRestricted: map["isRestricted"],
     );
   }
 }

@@ -10,6 +10,10 @@ class PostsDataNotifier extends StateNotifier<PostsDataState> {
     fetchAllPosts();
   }
 
+  Future<void> clearPosts() async {
+    state = PostsDataState.initial();
+  }
+
   Future<void> fetchAllPosts() async {
     try {
       final List<FindrobePost> posts = await _postRepo.fetchAllPosts();

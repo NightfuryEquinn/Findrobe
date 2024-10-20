@@ -15,3 +15,11 @@ class PostrobeSingleArgs {
     required this.post
   });
 }
+
+class ViewUserArgs {
+  final String userId;
+
+  ViewUserArgs({
+    required this.userId
+  });
+}

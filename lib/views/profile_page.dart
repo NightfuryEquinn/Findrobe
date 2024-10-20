@@ -12,6 +12,7 @@ import 'package:findrobe_app/providers/user_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';
+import 'package:findrobe_app/widgets/findrobe_empty.dart';
 import 'package:findrobe_app/widgets/findrobe_header.dart';
 import 'package:findrobe_app/widgets/findrobe_post_card.dart';
 import 'package:findrobe_app/widgets/findrobe_textfield.dart';
@@ -38,15 +39,22 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
     final currentUser = ref.read(authDataNotifierProvider);
     
-    Future.microtask(() => ref.read(userDataNotifierProvider.notifier).fetchUserData());
-    Future.microtask(() => ref.read(postsDataNotifierProvider.notifier).fetchPostByUserId(currentUser!.uid));
-    Future.microtask(() => ref.read(postsDataNotifierProvider.notifier).fetchCommentCountByUserId(currentUser!.uid));
+    if (currentUser != null) {
+      Future.microtask(() async {
+        await Future.wait([
+          ref.read(userDataNotifierProvider.notifier).fetchUserData(),
+          ref.read(postsDataNotifierProvider.notifier).fetchPostByUserId(currentUser.uid),
+          ref.read(postsDataNotifierProvider.notifier).fetchCommentCountByUserId(currentUser.uid)
+        ]);
+      });
+    }
   }
 
   Future<void> _refreshPosts() async {
-    final currentUser = ref.read(authDataNotifierProvider);
+    final currentUser = ref.watch(authDataNotifierProvider);
 
     if (currentUser != null) {
+      await ref.read(userDataNotifierProvider.notifier).fetchUserData();
       await ref.read(postsDataNotifierProvider.notifier).fetchPostByUserId(currentUser.uid);
       await ref.read(postsDataNotifierProvider.notifier).fetchCommentCountByUserId(currentUser.uid);
     }
@@ -160,7 +168,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final FindrobeUser? user = ref.watch(userDataNotifierProvider);
+    final FindrobeUser? user = ref.watch(userDataNotifierProvider).currentUser;
     final List<FindrobePost> userPosts = ref.watch(postsDataNotifierProvider).userPosts;
     final int userCommentCount = ref.watch(postsDataNotifierProvider).userCommentCount;
 
@@ -168,7 +176,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       userCtrl.text = user.username;
       emailCtrl.text = user.email;
     }
-   
+    
     final newProfilePic = ref.watch(addImageProvider);
     
     return Scaffold(
@@ -351,7 +359,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                 alternative: true,
                                 buttonColor: AppColors.black,
                                 onPressed: () {
-                                  ref.read(userDataNotifierProvider.notifier).logoutUser();
+                                  ref.read(userDataNotifierProvider.notifier).logoutUser(ref);
                                   Navigator.pushReplacementNamed(context, "/login");
                                 }
                               ),
@@ -390,19 +398,29 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           const SizedBox(height: 10.0),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
                                 "Recent Posts",
                                 style: AppFonts.poiret24,
                                 textAlign: TextAlign.left,
                               ),
-                              const SizedBox(height: 5.0),
-                              for (FindrobePost userPost in userPosts)
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 15.0),
-                                  child: FindrobePostCard(post: userPost)
-                                )
+                              const SizedBox(height: 5.0), 
+                              userPosts.isEmpty ?
+                                const FindrobeEmpty(labelText: "Fetching posts...")
+                              :
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: userPosts.length,
+                                  itemBuilder: (context, index) {
+                                    final post = userPosts[index];
+
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 15.0),
+                                      child: FindrobePostCard(post: post)
+                                    );
+                                }
+                              ),
                             ]
                           )
                         ],

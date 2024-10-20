@@ -1,6 +1,7 @@
 import 'package:findrobe_app/global/date_formatter.dart';
 import 'package:findrobe_app/models/comment.dart';
 import 'package:findrobe_app/models/user.dart';
+import 'package:findrobe_app/providers/auth_data_provider.dart';
 import 'package:findrobe_app/providers/others/loading_provider.dart';
 import 'package:findrobe_app/providers/post_data_provider.dart';
 import 'package:findrobe_app/providers/posts_data_provider.dart';
@@ -59,6 +60,8 @@ class FindrobeComment extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(authDataNotifierProvider);
+
     return Container(
       padding: const EdgeInsets.all(15.0),
       decoration: BoxDecoration(
@@ -127,7 +130,7 @@ class FindrobeComment extends ConsumerWidget {
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0))
                 ),
-                child: user?.userId == comment.userId ?
+                child: currentUser?.uid == comment.userId ?
                   InkWell(
                     borderRadius: BorderRadius.circular(5.0),
                     onTap: () {

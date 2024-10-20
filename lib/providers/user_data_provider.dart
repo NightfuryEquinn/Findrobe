@@ -1,20 +1,30 @@
+import 'package:findrobe_app/constants/states.dart';
 import 'package:findrobe_app/firebase/user_repo.dart';
-import 'package:findrobe_app/models/user.dart';
+import 'package:findrobe_app/providers/posts_data_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class UserDataNotifier extends StateNotifier<FindrobeUser?> {
+class UserDataNotifier extends StateNotifier<UserDataState> {
   final UserRepo _userRepo;
 
-  UserDataNotifier(this._userRepo) : super(null) {
+  UserDataNotifier(this._userRepo) : super(UserDataState.initial()) {
     fetchUserData();
   }
 
   Future<void> fetchUserData() async {
     try {
       final user = await _userRepo.fetchUserData();
-      state = user;
+      state = state.copyWith(currentUser: user);
     } catch (e) {
       print("Error fetching user data: $e");
+    }
+  }
+
+  Future<void> fetchViewUserData(String userId) async {
+    try {
+      final user = await _userRepo.fetchViewUserData(userId);
+      state = state.copyWith(otherUser: user);
+    } catch (e) {
+      print("Error fetching view user data: $e");
     }
   }
 
@@ -28,12 +38,34 @@ class UserDataNotifier extends StateNotifier<FindrobeUser?> {
     }
   }
 
-  Future<void> logoutUser() async {
+  Future<void> logoutUser(WidgetRef ref) async {
     try {
       await _userRepo.logoutUser();
-      state = null;
+      state = UserDataState.initial();
+
+      await ref.read(postsDataNotifierProvider.notifier).clearPosts();
     } catch (e) {
       print("Error log out: $e");
+    }
+  }
+
+  Future<bool> followUser(String currentUserId, String followUserId) async {
+    try {
+      final bool followed = await _userRepo.followUser(currentUserId, followUserId);
+      return followed;
+    } catch (e) {
+      print("Error follow user: $e");
+      return false;
+    }
+  }
+  
+  Future<bool> unfollowUser(String currentUserId, String followUserId) async {
+    try {
+      final bool unfollowed = await _userRepo.unfollowUser(currentUserId, followUserId);
+      return unfollowed;
+    } catch (e) {
+      print("Error unfollow user: $e");
+      return false;
     }
   }
 }
@@ -42,7 +74,7 @@ final userDataProvider = Provider<UserRepo>((ref) {
   return UserRepo();
 });
 
-final userDataNotifierProvider = StateNotifierProvider<UserDataNotifier, FindrobeUser?>((ref) {
+final userDataNotifierProvider = StateNotifierProvider<UserDataNotifier, UserDataState>((ref) {
   final userRepo = ref.watch(userDataProvider);
   return UserDataNotifier(userRepo);
 });

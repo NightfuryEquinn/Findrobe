@@ -170,7 +170,7 @@ class FindrobePostCard extends ConsumerWidget {
           const SizedBox(height: 10.0),
           Row(
             children: [
-              LikeButtonBlock(postId: post.postId, userId: post.userId),
+              LikeButtonBlock(postId: post.postId, userId: currentUser.uid),
               const SizedBox(width: 25.0),
               CommentButtonBlock(postId: post.postId)
             ],

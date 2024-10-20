@@ -93,7 +93,11 @@ class MainApp extends ConsumerWidget {
             page = const ResetPage();
             break;
           case "/view_user":
-            page = const ViewUserPage();
+            final ViewUserArgs args = settings.arguments as ViewUserArgs;
+
+            page = ViewUserPage(
+              args: args,
+            );
             break;
           case "/home":
             page = const FindrobeBottomBar();
