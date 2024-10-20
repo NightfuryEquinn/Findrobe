@@ -73,19 +73,23 @@ class LikeButtonState {
 class FollowState {
   final int followersCount;
   final bool isFollowing;
+  final List<FindrobeUser> followers;
 
   FollowState({
     required this.followersCount,
-    required this.isFollowing
+    required this.isFollowing,
+    required this.followers
   });
 
   FollowState copyWith({
     int? followersCount,
     bool? isFollowing,
+    List<FindrobeUser>? followers
   }) {
     return FollowState(
       followersCount: followersCount ?? this.followersCount, 
-      isFollowing: isFollowing ?? this.isFollowing
+      isFollowing: isFollowing ?? this.isFollowing,
+      followers: followers ?? this.followers
     );
   }
 }

@@ -1,12 +1,14 @@
 import 'dart:io';
 
+import 'package:findrobe_app/constants/arguments.dart';
 import 'package:findrobe_app/global/date_formatter.dart';
 import 'package:findrobe_app/global/loading_overlay.dart';
 import 'package:findrobe_app/models/post.dart';
 import 'package:findrobe_app/models/user.dart';
 import 'package:findrobe_app/providers/auth_data_provider.dart';
-import 'package:findrobe_app/providers/others/add_image_provider.dart';
-import 'package:findrobe_app/providers/others/loading_provider.dart';
+import 'package:findrobe_app/providers/add_image_provider.dart';
+import 'package:findrobe_app/providers/follow_provider.dart';
+import 'package:findrobe_app/providers/loading_provider.dart';
 import 'package:findrobe_app/providers/posts_data_provider.dart';
 import 'package:findrobe_app/providers/user_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
@@ -44,19 +46,21 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         await Future.wait([
           ref.read(userDataNotifierProvider.notifier).fetchUserData(),
           ref.read(postsDataNotifierProvider.notifier).fetchPostByUserId(currentUser.uid),
-          ref.read(postsDataNotifierProvider.notifier).fetchCommentCountByUserId(currentUser.uid)
+          ref.read(postsDataNotifierProvider.notifier).fetchCommentCountByUserId(currentUser.uid),
+          ref.read(followNotifierProvider(currentUser.uid).notifier).fetchFollowers(currentUser.uid)
         ]);
       });
     }
   }
 
-  Future<void> _refreshPosts() async {
+  Future<void> refreshPosts() async {
     final currentUser = ref.watch(authDataNotifierProvider);
 
     if (currentUser != null) {
       await ref.read(userDataNotifierProvider.notifier).fetchUserData();
       await ref.read(postsDataNotifierProvider.notifier).fetchPostByUserId(currentUser.uid);
       await ref.read(postsDataNotifierProvider.notifier).fetchCommentCountByUserId(currentUser.uid);
+      await ref.read(followNotifierProvider(currentUser.uid).notifier).fetchFollowers(currentUser.uid);
     }
   }
 
@@ -171,12 +175,13 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     final FindrobeUser? user = ref.watch(userDataNotifierProvider).currentUser;
     final List<FindrobePost> userPosts = ref.watch(postsDataNotifierProvider).userPosts;
     final int userCommentCount = ref.watch(postsDataNotifierProvider).userCommentCount;
+    final followState = ref.watch(followNotifierProvider(user?.userId));
 
     if (user != null) {
       userCtrl.text = user.username;
       emailCtrl.text = user.email;
     }
-    
+
     final newProfilePic = ref.watch(addImageProvider);
     
     return Scaffold(
@@ -195,7 +200,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   child: RefreshIndicator(
                     color: AppColors.black,
                     backgroundColor: AppColors.beige,
-                    onRefresh: _refreshPosts,
+                    onRefresh: refreshPosts,
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
@@ -267,7 +272,13 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                               ),
                               child: InkWell(
                                 onTap: () {
-                                  Navigator.pushNamed(context, "/followers");
+                                  Navigator.pushNamed(
+                                    context, 
+                                    "/followers",
+                                    arguments: FollowersArgs(
+                                      followers: followState.followers
+                                    )
+                                  );
                                 },
                                 splashColor: AppColors.overlayBlack,
                                 borderRadius: BorderRadius.circular(5.0),
@@ -281,7 +292,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                         style: AppFonts.forum16black
                                       ),
                                       Text(
-                                        "20",
+                                        "${followState.followersCount}",
                                         style: AppFonts.forum16black
                                       )
                                     ],

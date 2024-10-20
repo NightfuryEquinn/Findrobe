@@ -4,7 +4,7 @@ import 'package:findrobe_app/global/image_modal.dart';
 import 'package:findrobe_app/models/comment.dart';
 import 'package:findrobe_app/models/post.dart';
 import 'package:findrobe_app/providers/auth_data_provider.dart';
-import 'package:findrobe_app/providers/others/loading_provider.dart';
+import 'package:findrobe_app/providers/loading_provider.dart';
 import 'package:findrobe_app/providers/post_data_provider.dart';
 import 'package:findrobe_app/providers/posts_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
@@ -228,7 +228,7 @@ class _PostrobePageState extends ConsumerState<PostrobeSinglePage> {
                               context, 
                               ref, 
                               commentCtrl.text, 
-                              currentUser!.uid, 
+                              currentUser.uid, 
                               thePost.postId
                             );
 

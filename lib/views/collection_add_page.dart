@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:findrobe_app/constants/arguments.dart';
-import 'package:findrobe_app/providers/others/add_image_provider.dart';
-import 'package:findrobe_app/providers/others/dropdown_provider.dart';
+import 'package:findrobe_app/providers/add_image_provider.dart';
+import 'package:findrobe_app/providers/dropdown_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';

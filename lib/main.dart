@@ -65,7 +65,11 @@ class MainApp extends ConsumerWidget {
             page = const CollectionSinglePage();
             break;
           case "/followers":
-            page = const FindrobeFollowersPage();
+            final FollowersArgs args = settings.arguments as FollowersArgs;
+
+            page = FindrobeFollowersPage(
+              args: args
+            );
             break;
           case "/login":
             page = const LoginPage();

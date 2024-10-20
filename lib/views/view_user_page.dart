@@ -4,7 +4,7 @@ import 'package:findrobe_app/global/image_modal.dart';
 import 'package:findrobe_app/global/loading_overlay.dart';
 import 'package:findrobe_app/models/post.dart';
 import 'package:findrobe_app/models/user.dart';
-import 'package:findrobe_app/providers/others/follow_provider.dart';
+import 'package:findrobe_app/providers/follow_provider.dart';
 import 'package:findrobe_app/providers/posts_data_provider.dart';
 import 'package:findrobe_app/providers/user_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
@@ -32,9 +32,15 @@ class _ViewUserPageState extends ConsumerState<ViewUserPage> {
   void initState() {
     super.initState();
 
-    Future.microtask(() => ref.read(userDataNotifierProvider.notifier).fetchViewUserData(widget.args.userId));
-    Future.microtask(() => ref.read(postsDataNotifierProvider.notifier).fetchPostByUserId(widget.args.userId));
-    Future.microtask(() => ref.read(postsDataNotifierProvider.notifier).fetchCommentCountByUserId(widget.args.userId));
+    Future.microtask(() async {
+      await Future.wait([
+        ref.read(userDataNotifierProvider.notifier).fetchViewUserData(widget.args.userId),
+        ref.read(postsDataNotifierProvider.notifier).fetchPostByUserId(widget.args.userId),
+        ref.read(postsDataNotifierProvider.notifier).fetchCommentCountByUserId(widget.args.userId),
+        ref.read(followNotifierProvider(widget.args.userId).notifier).fetchFollowers(widget.args.userId),
+      ]);
+    });
+    
   }
 
   @override
@@ -115,39 +121,6 @@ class _ViewUserPageState extends ConsumerState<ViewUserPage> {
                           ],
                         ),
                         const SizedBox(height: 30.0),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Material(
-                            color: AppColors.beige,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(5.0))
-                            ),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.pushNamed(context, "/followers");
-                              },
-                              splashColor: AppColors.overlayBlack,
-                              borderRadius: BorderRadius.circular(5.0),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                                  child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Total Followers",
-                                      style: AppFonts.forum16black
-                                    ),
-                                    Text(
-                                      "${followState.followersCount}",
-                                      style: AppFonts.forum16black
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
-                          )
-                        ),
-                        const SizedBox(height: 15.0),
                         Container(
                           width: double.infinity,
                           decoration: BoxDecoration(
@@ -202,6 +175,8 @@ class _ViewUserPageState extends ConsumerState<ViewUserPage> {
                             FindrobeButton(
                               width: 150.0,
                               buttonText: followState.isFollowing ? "Unfollow" : "Follow", 
+                              buttonColor: followState.isFollowing ? AppColors.black : AppColors.beige,
+                              alternative: followState.isFollowing ? true : false,
                               onPressed: () {
                                 if (followState.isFollowing) {
                                   ref.read(followNotifierProvider(widget.args.userId).notifier).unfollowUser(ref);

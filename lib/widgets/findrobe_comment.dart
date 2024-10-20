@@ -1,8 +1,9 @@
+import 'package:findrobe_app/constants/arguments.dart';
 import 'package:findrobe_app/global/date_formatter.dart';
 import 'package:findrobe_app/models/comment.dart';
 import 'package:findrobe_app/models/user.dart';
 import 'package:findrobe_app/providers/auth_data_provider.dart';
-import 'package:findrobe_app/providers/others/loading_provider.dart';
+import 'package:findrobe_app/providers/loading_provider.dart';
 import 'package:findrobe_app/providers/post_data_provider.dart';
 import 'package:findrobe_app/providers/posts_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
@@ -74,7 +75,17 @@ class FindrobeComment extends ConsumerWidget {
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, "/view_user");
+                  if (user!.userId == currentUser?.uid) {
+                    Navigator.pushNamed(context, "/profile");
+                  } else {
+                    Navigator.pushNamed(
+                      context, 
+                      "/view_user",
+                      arguments: ViewUserArgs(
+                        userId: user!.userId
+                      )  
+                    );
+                  }
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5.0),

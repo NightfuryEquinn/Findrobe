@@ -1,5 +1,5 @@
 import 'package:findrobe_app/constants/findrobe_collection.dart';
-import 'package:findrobe_app/providers/others/dropdown_provider.dart';
+import 'package:findrobe_app/providers/dropdown_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:flutter/material.dart';

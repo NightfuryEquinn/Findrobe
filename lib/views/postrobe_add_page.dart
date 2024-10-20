@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:findrobe_app/global/loading_overlay.dart';
-import 'package:findrobe_app/providers/others/loading_provider.dart';
+import 'package:findrobe_app/providers/loading_provider.dart';
 import 'package:findrobe_app/providers/post_data_provider.dart';
 import 'package:findrobe_app/providers/posts_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';

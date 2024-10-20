@@ -1,4 +1,5 @@
 import 'package:findrobe_app/models/post.dart';
+import 'package:findrobe_app/models/user.dart';
 
 class EditCollectionArgs {
   final String itemName;
@@ -21,5 +22,13 @@ class ViewUserArgs {
 
   ViewUserArgs({
     required this.userId
+  });
+}
+
+class FollowersArgs {
+  final List<FindrobeUser> followers;
+
+  FollowersArgs({
+    required this.followers
   });
 }

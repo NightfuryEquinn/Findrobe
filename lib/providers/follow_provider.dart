@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:findrobe_app/constants/firebase_collection.dart';
 import 'package:findrobe_app/constants/states.dart';
+import 'package:findrobe_app/models/user.dart';
 import 'package:findrobe_app/providers/auth_data_provider.dart';
 import 'package:findrobe_app/providers/user_data_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,14 +14,17 @@ class FollowNotifier extends StateNotifier<FollowState> {
     required this.currentUserId,
     required this.followUserId,
     required int followersCount,
-    required bool isFollowing
+    required bool isFollowing,
+    required List<FindrobeUser> followers,
   }) : super(
     FollowState(
       followersCount: followersCount, 
-      isFollowing: isFollowing
+      isFollowing: isFollowing,
+      followers: followers
     )
   ) {
     _checkIfFollowed();
+    fetchFollowers(currentUserId);
   }
 
   Future<void> _checkIfFollowed() async {
@@ -39,6 +43,31 @@ class FollowNotifier extends StateNotifier<FollowState> {
     } catch (e) {
       print("Failed to check following status: $e");
     }
+  }
+
+  Future<void> fetchFollowers(String userId) async {
+    QuerySnapshot followersSnapshot = await usersCollection
+      .doc(userId)
+      .collection(followersInUserCollection)
+      .get();
+
+    List<String> followers = followersSnapshot.docs.map((followDoc) {
+      return followDoc.id;
+    }).toList();
+
+    List<FindrobeUser> followersDetail = [];
+    for (String follower in followers) {
+      DocumentSnapshot followerDoc = await usersCollection.doc(follower).get();
+
+      if (followerDoc.exists) {
+        followersDetail.add(FindrobeUser.fromMap(followerDoc));
+      }
+    }
+
+    state = state.copyWith(
+      followers: followersDetail,
+      followersCount: followersDetail.length
+    );
   }
 
   Future<void> followUser(WidgetRef ref) async {
@@ -60,13 +89,14 @@ class FollowNotifier extends StateNotifier<FollowState> {
   }
 }
 
-final followNotifierProvider = StateNotifierProvider.family<FollowNotifier, FollowState, String>((ref, followUserId) {
+final followNotifierProvider = StateNotifierProvider.family<FollowNotifier, FollowState, String?>((ref, followUserId) {
   final currentUserId = ref.watch(authDataNotifierProvider)?.uid;
 
   return FollowNotifier(
     currentUserId: currentUserId!, 
-    followUserId: followUserId, 
+    followUserId: followUserId ?? "", 
     followersCount: 0, 
-    isFollowing: false
+    isFollowing: false,
+    followers: []
   );
 });

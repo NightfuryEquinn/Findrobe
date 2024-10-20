@@ -1,5 +1,9 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:findrobe_app/providers/others/bottombar_index_provider.dart';
+import 'package:findrobe_app/providers/auth_data_provider.dart';
+import 'package:findrobe_app/providers/bottombar_index_provider.dart';
+import 'package:findrobe_app/providers/follow_provider.dart';
+import 'package:findrobe_app/providers/posts_data_provider.dart';
+import 'package:findrobe_app/providers/user_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/views/findrobe_page.dart';
 import 'package:findrobe_app/views/postrobe_add_page.dart';
@@ -36,6 +40,19 @@ class FindrobeBottomBar extends ConsumerWidget {
         animationDuration: const Duration(milliseconds: 1000),
         onTap: (value) {
           ref.read(bottomBarIndexProvider.notifier).update((state) => value);
+
+          // Indexed stack won't trigger refresh
+          // This is only for profile page
+          if (value == 3) {
+            final currentUser = ref.watch(authDataNotifierProvider);
+
+            if (currentUser != null) {
+              ref.read(userDataNotifierProvider.notifier).fetchUserData();
+              ref.read(postsDataNotifierProvider.notifier).fetchPostByUserId(currentUser.uid);
+              ref.read(postsDataNotifierProvider.notifier).fetchCommentCountByUserId(currentUser.uid);
+              ref.read(followNotifierProvider(currentUser.uid).notifier).fetchFollowers(currentUser.uid);
+            }
+          }
         },
         items: [
           Icon(
