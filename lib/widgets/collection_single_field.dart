@@ -1,22 +1,58 @@
 import 'package:findrobe_app/constants/arguments.dart';
 import 'package:findrobe_app/global/popup_modal.dart';
+import 'package:findrobe_app/models/clothing.dart';
+import 'package:findrobe_app/providers/collection_data_provider.dart';
+import 'package:findrobe_app/providers/loading_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CollectionSingleField extends StatelessWidget {
-  final String name;
-  final String image;
+class CollectionSingleField extends ConsumerWidget {
+  final FindrobeClothing clothing;
 
   const CollectionSingleField({
     super.key,
-    required this.name,
-    required this.image
+    required this.clothing
   });
 
+  Future<void> _deletePost(BuildContext context, WidgetRef ref, String clothingId, String category, String userId) async {
+    ref.read(loadingProvider.notifier).show();
+
+    final bool deleted = await ref.read(collectionDataNotifierProvider.notifier).deleteClothing(clothingId, category, userId);
+
+    if (deleted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.beige,
+          content: Text(
+            "Your clothing is deleted!",
+            style: AppFonts.forum16black,
+          ),
+          duration: const Duration(seconds: 3)
+        )
+      );
+
+      Navigator.of(context).pop();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.beige,
+          content: Text(
+            "Failed to delete your clothing. Please try again!",
+            style: AppFonts.forum16black,
+          ),
+          duration: const Duration(seconds: 3)
+        )
+      );
+    }
+
+    ref.read(loadingProvider.notifier).hide();
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
@@ -29,7 +65,7 @@ class CollectionSingleField extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(5.0),
               child: Image.network(
-                image,
+                clothing.image,
                 width: 65,
                 height: 65,
                 fit: BoxFit.cover,
@@ -38,7 +74,7 @@ class CollectionSingleField extends StatelessWidget {
             const SizedBox(width: 30.0),
             Expanded(
               child: Text(
-                name,
+                clothing.name,
                 style: AppFonts.poiret20
               ),
             ),
@@ -58,7 +94,7 @@ class CollectionSingleField extends StatelessWidget {
                           context, 
                           "/collection_add",
                           arguments: EditCollectionArgs(
-                            itemName: name
+                            clothing: clothing
                           )
                         );
                       },
@@ -86,7 +122,13 @@ class CollectionSingleField extends StatelessWidget {
                           title: "Delete Confirmation", 
                           content: "Are you sure you want to delete this item?", 
                           onPress: () {
-                            print("Deleted $name");
+                            _deletePost(
+                              context, 
+                              ref, 
+                              clothing.clothingId, 
+                              clothing.category, 
+                              clothing.userId
+                            );
                           }
                         );
                       },

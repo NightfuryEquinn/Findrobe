@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class FindrobeImagepicker extends StatelessWidget {
   final String labelText;
   final double height;
-  final File? image;
+  final dynamic image;
   final BoxFit boxfit;
   final VoidCallback onTap;
 
@@ -36,16 +36,22 @@ class FindrobeImagepicker extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
             child: Center(
-              child: image == null ?
+              child: image is String && image.isNotEmpty ?
+                Image.network(
+                  image,
+                  fit: boxfit,
+                  width: double.infinity,
+                )
+              : image is File ?
+                Image.file(
+                  image,
+                  fit: boxfit,
+                  width: double.infinity,
+                )
+              : 
                 Text(
                   labelText,
                   style: AppFonts.poiret20,
-                )
-                :
-                Image.file(
-                  image!,
-                  fit: boxfit,
-                  width: double.infinity,
                 )
             )
           ),

@@ -53,7 +53,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     }
   }
 
-  Future<void> refreshPosts() async {
+  Future<void> _refreshPosts() async {
     final currentUser = ref.watch(authDataNotifierProvider);
 
     if (currentUser != null) {
@@ -200,7 +200,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   child: RefreshIndicator(
                     color: AppColors.black,
                     backgroundColor: AppColors.beige,
-                    onRefresh: refreshPosts,
+                    onRefresh: _refreshPosts,
                     child: SingleChildScrollView(
                       child: Column(
                         children: [

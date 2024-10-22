@@ -6,8 +6,7 @@ enum TopWear {
   hoodies,
   sweaters,
   jackets,
-  coats,
-  others
+  coats
 }
 
 enum BottomWear {
@@ -17,8 +16,7 @@ enum BottomWear {
   shorts,
   skirts,
   cargoPants,
-  joggers,
-  others
+  joggers
 }
 
 enum Footwear {
@@ -29,21 +27,20 @@ enum Footwear {
   loafers,
   flipFlops,
   heels,
-  flats,
-  others
+  flats
 }
 
 extension TopWearExtension on TopWear {
   String get name {
     switch (this) {
       case TopWear.tShirts:
-        return "T-Shirts";
+        return "Tshirts";
       case TopWear.shirts:
         return "Shirts";
       case TopWear.blouses:
         return "Blouses";
       case TopWear.tankTops:
-        return "Tank Tops";
+        return "Tanktops";
       case TopWear.hoodies:
         return "Hoodies";
       case TopWear.sweaters:
@@ -52,8 +49,6 @@ extension TopWearExtension on TopWear {
         return "Jackets";
       case TopWear.coats:
         return "Coats";
-      case TopWear.others:
-        return "Others";
     }
   }
 }
@@ -72,11 +67,9 @@ extension BottomWearExtension on BottomWear {
       case BottomWear.skirts:
         return "Skirts";
       case BottomWear.cargoPants:
-        return "Cargo Pants";
+        return "Cargopants";
       case BottomWear.joggers:
         return "Joggers";
-      case BottomWear.others:
-        return "Others";
     }
   }
 }
@@ -85,7 +78,7 @@ extension FootwearExtension on Footwear {
   String get name {
     switch (this) {
       case Footwear.sports:
-        return "Sports Shoes";
+        return "Sports";
       case Footwear.sneakers:
         return "Sneakers";
       case Footwear.boots:
@@ -95,13 +88,11 @@ extension FootwearExtension on Footwear {
       case Footwear.loafers:
         return "Loafers";
       case Footwear.flipFlops:
-        return "Flip Flops";
+        return "Flipflops";
       case Footwear.heels:
         return "Heels";
       case Footwear.flats:
         return "Flats";
-      case Footwear.others:
-        return "Others";
     }
   }
 }

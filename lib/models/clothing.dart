@@ -1,17 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FindrobeClothing {
-  final int clothingId;
+  final String clothingId;
   final String name;
   final String category;
   final String image;
-  final int userId;
+  final Timestamp createdAt;
+  final String userId;
 
   const FindrobeClothing({
     required this.clothingId,
     required this.name,
     required this.category,
     required this.image,
+    required this.createdAt,
     required this.userId
   });
 
@@ -21,6 +23,7 @@ class FindrobeClothing {
       "name": name,
       "category": category,
       "image": image,
+      "createdAt": createdAt,
       "userId": userId
     };
   }
@@ -33,6 +36,7 @@ class FindrobeClothing {
       name: map["name"], 
       category: map["category"], 
       image: map["image"], 
+      createdAt: map["createdAt"],
       userId: map["userId"]
     );
   }

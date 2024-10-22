@@ -6,6 +6,8 @@ final CollectionReference usersCollection = _firestore.collection("users");
 final CollectionReference postsCollection = _firestore.collection("posts");
 final CollectionReference clothingCollection = _firestore.collection("clothings");
 
+const clothingsByUserCollection = "user";
+const categoryInClothingCollection = "category";
 const imagesInPostCollection = "images";
 const likedInPostCollection = "likes";
 const commentsInPostCollection = "comments";

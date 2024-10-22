@@ -1,4 +1,5 @@
 import 'package:findrobe_app/constants/findrobe_collection.dart';
+import 'package:findrobe_app/global/text_formatter.dart';
 import 'package:findrobe_app/providers/dropdown_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
@@ -7,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DropdownSection<T> {
   final String sectionTitle;
-  final List<T> items;
+  final List<String> items;
 
   DropdownSection({
     required this.sectionTitle,
@@ -27,18 +28,18 @@ class FindrobeDropdown extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedValue = ref.watch(dropdownProvider);
 
-    List<DropdownSection<dynamic>> sections = [
+    List<DropdownSection<String>> sections = [
       DropdownSection(
         sectionTitle: "Top Wear",
-        items: TopWear.values
+        items: TopWear.values.map((item) => item.toString()).toList()
       ),
       DropdownSection(
         sectionTitle: "Bottom Wear",
-        items: BottomWear.values
+        items: BottomWear.values.map((item) => item.toString()).toList()
       ),
       DropdownSection(
         sectionTitle: "Footwear",
-        items: Footwear.values
+        items: Footwear.values.map((item) => item.toString()).toList()
       )
     ];
 
@@ -95,9 +96,9 @@ class FindrobeDropdown extends ConsumerWidget {
                 ),
                 ...section.items.map((item) {
                   return DropdownMenuItem<String>(
-                    value: item.toString().toUpperCase(),
+                    value: item,
                     child: Text(
-                      item.toString().split('.').last[0].toUpperCase() + item.toString().split('.').last.substring(1),
+                      formatFindrobeCollection(category: item),
                       style: AppFonts.forum16white,
                     )
                   );

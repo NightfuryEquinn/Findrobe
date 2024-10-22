@@ -1,11 +1,12 @@
+import 'package:findrobe_app/models/clothing.dart';
 import 'package:findrobe_app/models/post.dart';
 import 'package:findrobe_app/models/user.dart';
 
 class EditCollectionArgs {
-  final String itemName;
+  final FindrobeClothing clothing;
 
   EditCollectionArgs({
-    required this.itemName
+    required this.clothing
   });
 }
 
@@ -30,5 +31,13 @@ class FollowersArgs {
 
   FollowersArgs({
     required this.followers
+  });
+}
+
+class CollectionSingleArgs {
+  final String category;
+
+  CollectionSingleArgs({
+    required this.category
   });
 }

@@ -1,19 +1,21 @@
-import 'package:findrobe_app/constants/findrobe_collection.dart';
+import 'package:findrobe_app/constants/arguments.dart';
+import 'package:findrobe_app/constants/findrobe_display.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/widgets/collection_button.dart';
 import 'package:findrobe_app/widgets/collection_header.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';
 import 'package:findrobe_app/widgets/findrobe_header.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CollectionPage extends StatefulWidget {
+class CollectionPage extends ConsumerStatefulWidget {
   const CollectionPage({super.key});
 
   @override
-  State<CollectionPage> createState() => _CollectionPageState();
+  ConsumerState<CollectionPage> createState() => _CollectionPageState();
 }
 
-class _CollectionPageState extends State<CollectionPage> {
+class _CollectionPageState extends ConsumerState<CollectionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,46 +34,64 @@ class _CollectionPageState extends State<CollectionPage> {
                     children: [
                       const CollectionHeader(headerText: "Top Wear"),
                       const SizedBox(height: 5.0),
-                      for (var topWear in TopWear.values)
+                      for (var topWear in TopWearList.values)
                         Padding(
                           padding: const EdgeInsetsDirectional.symmetric(vertical: 2.5),
                           child: CollectionButton(
                             onTap: () {
-                              Navigator.pushNamed(context, "/collection_single");
+                              Navigator.pushNamed(
+                                context, 
+                                "/collection_single",
+                                arguments: CollectionSingleArgs(
+                                  category: topWear.name
+                                )
+                              );
                             },
-                            placeholderImage: "https://image.uniqlo.com/UQ/ST3/AsianCommon/imagesgoods/467134/sub/goods_467134_sub14.jpg?width=600", 
+                            placeholderImage: topWear.image, 
                             title: topWear.name, 
-                            punchline: "Plain and never fails..."
+                            punchline: topWear.punchline
                           )
                         ),
                       const SizedBox(height: 30.0),
                       const CollectionHeader(headerText: "Bottom Wear"),
                       const SizedBox(height: 5.0),
-                      for (var bottomWear in BottomWear.values)
+                      for (var bottomWear in BottomWearList.values)
                         Padding(
                           padding: const EdgeInsetsDirectional.symmetric(vertical: 2.5),
                           child: CollectionButton(
                             onTap: () {
-                              print("Selected: $bottomWear.name");
+                              Navigator.pushNamed(
+                                context, 
+                                "/collection_single",
+                                arguments: CollectionSingleArgs(
+                                  category: bottomWear.name
+                                )
+                              );
                             },
-                            placeholderImage: "https://image.uniqlo.com/UQ/ST3/AsianCommon/imagesgoods/467134/sub/goods_467134_sub14.jpg?width=600", 
+                            placeholderImage: bottomWear.image, 
                             title: bottomWear.name, 
-                            punchline: "Plain and never fails..."
+                            punchline: bottomWear.punchline
                           )
                         ),
                       const SizedBox(height: 30.0),
                       const CollectionHeader(headerText: "Footwear"),
                       const SizedBox(height: 5.0),
-                      for (var footwear in Footwear.values)
+                      for (var footwear in FootwearList.values)
                         Padding(
                           padding: const EdgeInsetsDirectional.symmetric(vertical: 2.5),
                           child: CollectionButton(
                             onTap: () {
-                              print("Selected: $footwear.name");
+                              Navigator.pushNamed(
+                                context, 
+                                "/collection_single",
+                                arguments: CollectionSingleArgs(
+                                  category: footwear.name
+                                )
+                              );
                             },
-                            placeholderImage: "https://image.uniqlo.com/UQ/ST3/AsianCommon/imagesgoods/467134/sub/goods_467134_sub14.jpg?width=600", 
+                            placeholderImage: footwear.image, 
                             title: footwear.name, 
-                            punchline: "Plain and never fails..."
+                            punchline: footwear.punchline
                           )
                         ),
                     ]
@@ -80,7 +100,7 @@ class _CollectionPageState extends State<CollectionPage> {
               ),
               const SizedBox(height: 30.0),
               FindrobeButton(
-                buttonText: "Add Clothing", 
+                buttonText: "Add Clothing to Collection", 
                 onPressed: () {
                   Navigator.pushNamed(context, "/collection_add");
                 }

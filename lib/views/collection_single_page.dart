@@ -1,38 +1,89 @@
+import 'package:findrobe_app/constants/arguments.dart';
+import 'package:findrobe_app/models/clothing.dart';
+import 'package:findrobe_app/providers/auth_data_provider.dart';
+import 'package:findrobe_app/providers/collection_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/widgets/collection_single_field.dart';
+import 'package:findrobe_app/widgets/findrobe_empty.dart';
 import 'package:findrobe_app/widgets/findrobe_header.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CollectionSinglePage extends StatefulWidget {
-  const CollectionSinglePage({super.key});
+class CollectionSinglePage extends ConsumerStatefulWidget {
+  final CollectionSingleArgs args;
+
+  const CollectionSinglePage({
+    super.key,
+    required this.args
+  });
 
   @override
-  State<CollectionSinglePage> createState() => _CollectionSinglePageState();
+  ConsumerState<CollectionSinglePage> createState() => _CollectionSinglePageState();
 }
 
-class _CollectionSinglePageState extends State<CollectionSinglePage> {
+class _CollectionSinglePageState extends ConsumerState<CollectionSinglePage> {
+  @override
+  void initState() {
+    super.initState();
+
+    final currentUser = ref.read(authDataNotifierProvider);
+
+    if (currentUser != null) {
+      Future.microtask(() async {
+        await Future.wait([
+          ref.read(collectionDataNotifierProvider.notifier).fetchClothing(currentUser.uid, widget.args.category)
+        ]);
+      });
+    }
+  }
+
+  Future<void> _refreshCollection() async {
+    final currentUser = ref.read(authDataNotifierProvider);
+
+    if (currentUser != null) {
+      Future.microtask(() async {
+        await Future.wait([
+          ref.read(collectionDataNotifierProvider.notifier).fetchClothing(currentUser.uid, widget.args.category)
+        ]);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    final List<FindrobeClothing> clothings = ref.watch(collectionDataNotifierProvider);
+    
+    return Scaffold(
       backgroundColor: AppColors.grey,
       body: SafeArea(
         top: true,
         child: Padding(
-          padding: EdgeInsets.all(30.0),
+          padding: const EdgeInsets.all(30.0),
           child: Column(
             children: [
-              FindrobeHeader(headerTitle: "Collection"),
-              SizedBox(height: 30.0),
+              FindrobeHeader(headerTitle: widget.args.category),
+              const SizedBox(height: 30.0),
               Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      CollectionSingleField(
-                        name: "Jeans", 
-                        image: "https://image.uniqlo.com/UQ/ST3/AsianCommon/imagesgoods/467134/sub/goods_467134_sub14.jpg?width=494"
-                      )
-                    ],
-                  )
+                child: RefreshIndicator(
+                  color: AppColors.black,
+                  backgroundColor: AppColors.beige,
+                  onRefresh: _refreshCollection,
+                  child: clothings.isEmpty ?
+                    const FindrobeEmpty(labelText: "Fetching clothings...")
+                  :
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: clothings.length,
+                      itemBuilder: (context, index) {
+                        final clothing = clothings[index];
+
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 15.0),
+                          child: CollectionSingleField(clothing: clothing)
+                        );
+                      },
+                    ),
                 )
               )
             ]

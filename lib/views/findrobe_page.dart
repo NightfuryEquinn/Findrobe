@@ -7,16 +7,17 @@ import 'package:findrobe_app/widgets/findrobe_header.dart';
 import 'package:findrobe_app/widgets/findrobe_imagepicker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
-class FindrobePage extends StatefulWidget {
+class FindrobePage extends ConsumerStatefulWidget {
   const FindrobePage({super.key});
 
   @override
-  State<FindrobePage> createState() => _FindrobePageState();
+  ConsumerState<FindrobePage> createState() => _FindrobePageState();
 }
 
-class _FindrobePageState extends State<FindrobePage> {
+class _FindrobePageState extends ConsumerState<FindrobePage> {
   final ImagePicker _picker = ImagePicker();
   File? _topWearImage;
   File? _bottomWearImage;
@@ -85,6 +86,21 @@ class _FindrobePageState extends State<FindrobePage> {
                 ),
                 onTap: () {
                   _pickImage(type, ImageSource.gallery);
+                  Navigator.of(context).pop();
+                }
+              ),
+              ListTile(
+                leading: const Icon(
+                  CupertinoIcons.collections,
+                  size: 24.0,
+                  color: AppColors.black,
+                ),
+                title: Text(
+                  "My Collection",
+                  style: AppFonts.forum16black,
+                ),
+                onTap: () {
+                  // TODO: Navigate to collection to select saved images and back to see the selected image
                   Navigator.of(context).pop();
                 }
               ),

@@ -12,7 +12,7 @@ class FindrobeDisplay {
 
 enum TopWearList {
   tShirt(
-    name: "T-Shirts",
+    name: "Tshirts",
     punchline: "Effortless comfort, everyday.",
     image: "assets/clothings/tshirt.png",
   ),
@@ -27,7 +27,7 @@ enum TopWearList {
     image: "assets/clothings/blouse.png",
   ),
   tankTop(
-    name: "Tank Tops",
+    name: "Tanktops",
     punchline: "Stay cool and casual all day.",
     image: "assets/clothings/tank_top.png",
   ),
@@ -90,7 +90,7 @@ enum BottomWearList {
     image: "assets/clothings/skirt.png",
   ),
   cargoPants(
-    name: "Cargo Pants",
+    name: "Cargopants",
     punchline: "Utility meets everyday comfort.",
     image: "assets/clothings/cargo_pants.png",
   ),
@@ -113,7 +113,7 @@ enum BottomWearList {
 
 enum FootwearList {
   sportsShoes(
-    name: "Sports Shoes",
+    name: "Sports",
     punchline: "Perform your best with every step.",
     image: "assets/clothings/sports_shoes.png",
   ),
@@ -138,7 +138,7 @@ enum FootwearList {
     image: "assets/clothings/loafers.png",
   ),
   flipFlops(
-    name: "Flip-Flops",
+    name: "Flipflops",
     punchline: "Relaxed and ready for the beach.",
     image: "assets/clothings/flip_flops.png",
   ),

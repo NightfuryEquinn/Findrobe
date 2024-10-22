@@ -33,8 +33,8 @@ class CollectionButton extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(5.0),
-                child: Image.network(
-                  placeholderImage,
+                child: Image(
+                  image: AssetImage(placeholderImage),
                   width: 65,
                   height: 65,
                   fit: BoxFit.cover,

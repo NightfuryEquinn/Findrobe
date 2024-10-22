@@ -204,8 +204,7 @@ class PostRepo {
         user: null
       );
 
-      await postRef
-        .set(findrobePost.toMap());
+      await postRef.set(findrobePost.toMap());
 
       for (String imageUrl in imageUrls) {
         await postRef
