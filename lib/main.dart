@@ -59,7 +59,11 @@ class MainApp extends ConsumerWidget {
             );
             break;
           case "/collection":
-            page = const CollectionPage();
+            final CollectionArgs args = settings.arguments as CollectionArgs;
+
+            page = CollectionPage(
+              args: args
+            );
             break;
           case "/collection_single":
             final CollectionSingleArgs args = settings.arguments as CollectionSingleArgs;

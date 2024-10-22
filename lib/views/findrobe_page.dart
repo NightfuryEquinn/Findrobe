@@ -1,5 +1,5 @@
-import 'dart:io';
-
+import 'package:findrobe_app/constants/arguments.dart';
+import 'package:findrobe_app/providers/findrobe_image_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';
@@ -18,27 +18,6 @@ class FindrobePage extends ConsumerStatefulWidget {
 }
 
 class _FindrobePageState extends ConsumerState<FindrobePage> {
-  final ImagePicker _picker = ImagePicker();
-  File? _topWearImage;
-  File? _bottomWearImage;
-  File? _shoesImage;
-
-  Future<void> _pickImage(String type, ImageSource source) async {
-    final pickedFile = await _picker.pickImage(source: source);
-
-    if (pickedFile != null) {
-      setState(() {
-        if (type == "Top Wear") {
-          _topWearImage = File(pickedFile.path);
-        } else if (type == "Bottom Wear") {
-          _bottomWearImage = File(pickedFile.path);
-        } else if (type == "Footwear") {
-          _shoesImage = File(pickedFile.path);
-        }
-      });
-    }
-  }
-
   void _showImageSourceDialog(BuildContext context, String type) {
     showModalBottomSheet(
       backgroundColor: AppColors.white,
@@ -70,7 +49,7 @@ class _FindrobePageState extends ConsumerState<FindrobePage> {
                   style: AppFonts.forum16black,
                 ),
                 onTap: () {
-                  _pickImage(type, ImageSource.camera);
+                  ref.read(findrobeImageProvider.notifier).pickImageFromPhone(type, ImageSource.camera);
                   Navigator.of(context).pop();
                 }
               ),
@@ -85,7 +64,7 @@ class _FindrobePageState extends ConsumerState<FindrobePage> {
                   style: AppFonts.forum16black,
                 ),
                 onTap: () {
-                  _pickImage(type, ImageSource.gallery);
+                  ref.read(findrobeImageProvider.notifier).pickImageFromPhone(type, ImageSource.gallery);
                   Navigator.of(context).pop();
                 }
               ),
@@ -100,8 +79,16 @@ class _FindrobePageState extends ConsumerState<FindrobePage> {
                   style: AppFonts.forum16black,
                 ),
                 onTap: () {
-                  // TODO: Navigate to collection to select saved images and back to see the selected image
                   Navigator.of(context).pop();
+
+                  Navigator.pushNamed(
+                    context,
+                    "/collection",
+                    arguments: CollectionArgs(
+                      type: type,
+                      isFromCollection: true,
+                    )
+                  );
                 }
               ),
             ],
@@ -113,6 +100,8 @@ class _FindrobePageState extends ConsumerState<FindrobePage> {
 
   @override
   Widget build(BuildContext context) {
+    final findrobeImage = ref.watch(findrobeImageProvider);
+
     return Scaffold(
       backgroundColor: AppColors.grey,
       body: SafeArea(
@@ -134,8 +123,9 @@ class _FindrobePageState extends ConsumerState<FindrobePage> {
                         height: 200.0,
                         onTap: () {
                           _showImageSourceDialog(context, "Top Wear");
+                          print(findrobeImage.topWearImage);
                         },
-                        image: _topWearImage,
+                        image: findrobeImage.topWearImage,
                       ),
                       const SizedBox(height: 5.0),
                       FindrobeImagepicker(
@@ -144,7 +134,7 @@ class _FindrobePageState extends ConsumerState<FindrobePage> {
                         onTap: () {
                           _showImageSourceDialog(context, "Bottom Wear");
                         },
-                        image: _bottomWearImage,
+                        image: findrobeImage.bottomWearImage,
                       ),
                       const SizedBox(height: 5.0),
                       FindrobeImagepicker(
@@ -153,13 +143,20 @@ class _FindrobePageState extends ConsumerState<FindrobePage> {
                         onTap: () {
                           _showImageSourceDialog(context, "Footwear");
                         },
-                        image: _shoesImage,
+                        image: findrobeImage.footwearImage,
                         boxfit: BoxFit.cover,
                       ),
-                      const SizedBox(height: 30.0),
+                      const SizedBox(height: 10.0),
                       FindrobeButton(
                         buttonText: "View Collection", 
-                        onPressed: () => Navigator.pushNamed(context, "/collection")
+                        onPressed: () => Navigator.pushNamed(
+                          context, 
+                          "/collection",
+                          arguments: CollectionArgs(
+                            isFromCollection: false,
+                            type: ""
+                          )
+                        )
                       )
                     ],
                   )

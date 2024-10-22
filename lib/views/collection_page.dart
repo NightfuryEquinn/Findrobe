@@ -9,7 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CollectionPage extends ConsumerStatefulWidget {
-  const CollectionPage({super.key});
+  final CollectionArgs args;
+
+  const CollectionPage({
+    super.key,
+    required this.args
+  });
 
   @override
   ConsumerState<CollectionPage> createState() => _CollectionPageState();
@@ -32,79 +37,207 @@ class _CollectionPageState extends ConsumerState<CollectionPage> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      const CollectionHeader(headerText: "Top Wear"),
-                      const SizedBox(height: 5.0),
-                      for (var topWear in TopWearList.values)
-                        Padding(
-                          padding: const EdgeInsetsDirectional.symmetric(vertical: 2.5),
-                          child: CollectionButton(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context, 
-                                "/collection_single",
-                                arguments: CollectionSingleArgs(
-                                  category: topWear.name
+                      widget.args.type == "Top Wear" && widget.args.isFromCollection ?
+                        Wrap(
+                          spacing: 1.0,
+                          runSpacing: 1.0,
+                          children: [
+                            const CollectionHeader(headerText: "Top Wear"),
+                            const SizedBox(height: 5.0),
+                            ...TopWearList.values.map(
+                              (topWear) => Padding(
+                                padding: const EdgeInsetsDirectional.symmetric(vertical: 2.5),
+                                child: CollectionButton(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context, 
+                                      "/collection_single",
+                                      arguments: CollectionSingleArgs(
+                                        category: topWear.name,
+                                        type: widget.args.type,
+                                        isFromCollection: widget.args.isFromCollection
+                                      )
+                                    );
+                                  },
+                                  placeholderImage: topWear.image, 
+                                  title: topWear.name, 
+                                  punchline: topWear.punchline
                                 )
-                              );
-                            },
-                            placeholderImage: topWear.image, 
-                            title: topWear.name, 
-                            punchline: topWear.punchline
-                          )
-                        ),
-                      const SizedBox(height: 30.0),
-                      const CollectionHeader(headerText: "Bottom Wear"),
-                      const SizedBox(height: 5.0),
-                      for (var bottomWear in BottomWearList.values)
-                        Padding(
-                          padding: const EdgeInsetsDirectional.symmetric(vertical: 2.5),
-                          child: CollectionButton(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context, 
-                                "/collection_single",
-                                arguments: CollectionSingleArgs(
-                                  category: bottomWear.name
+                              ),
+                            ),
+                            const SizedBox(height: 30.0)
+                          ],
+                        )
+                      : widget.args.type == "" && !widget.args.isFromCollection ?
+                        Wrap(
+                          spacing: 1.0,
+                          runSpacing: 1.0,
+                          children: [
+                            const CollectionHeader(headerText: "Top Wear"),
+                            const SizedBox(height: 5.0),
+                            ...TopWearList.values.map(
+                              (topWear) => Padding(
+                                padding: const EdgeInsetsDirectional.symmetric(vertical: 2.5),
+                                child: CollectionButton(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context, 
+                                      "/collection_single",
+                                      arguments: CollectionSingleArgs(
+                                        category: topWear.name,
+                                        type: widget.args.type,
+                                      )
+                                    );
+                                  },
+                                  placeholderImage: topWear.image, 
+                                  title: topWear.name, 
+                                  punchline: topWear.punchline
                                 )
-                              );
-                            },
-                            placeholderImage: bottomWear.image, 
-                            title: bottomWear.name, 
-                            punchline: bottomWear.punchline
-                          )
-                        ),
-                      const SizedBox(height: 30.0),
-                      const CollectionHeader(headerText: "Footwear"),
-                      const SizedBox(height: 5.0),
-                      for (var footwear in FootwearList.values)
-                        Padding(
-                          padding: const EdgeInsetsDirectional.symmetric(vertical: 2.5),
-                          child: CollectionButton(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context, 
-                                "/collection_single",
-                                arguments: CollectionSingleArgs(
-                                  category: footwear.name
+                              ),
+                            ),
+                            const SizedBox(height: 30.0)
+                          ],
+                        )
+                      :
+                        const SizedBox.shrink(),
+                      widget.args.type == "Bottom Wear" && widget.args.isFromCollection ?
+                        Wrap(
+                          spacing: 1.0,
+                          runSpacing: 1.0,
+                          children: [
+                            const CollectionHeader(headerText: "Bottom Wear"),
+                            const SizedBox(height: 5.0),
+                            ...BottomWearList.values.map(
+                            (bottomWear) => Padding(
+                                padding: const EdgeInsetsDirectional.symmetric(vertical: 2.5),
+                                child: CollectionButton(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context, 
+                                      "/collection_single",
+                                      arguments: CollectionSingleArgs(
+                                        category: bottomWear.name,
+                                        type: widget.args.type,
+                                        isFromCollection: widget.args.isFromCollection
+                                      )
+                                    );
+                                  },
+                                  placeholderImage: bottomWear.image, 
+                                  title: bottomWear.name, 
+                                  punchline: bottomWear.punchline
                                 )
-                              );
-                            },
-                            placeholderImage: footwear.image, 
-                            title: footwear.name, 
-                            punchline: footwear.punchline
-                          )
-                        ),
+                              ),
+                            ),
+                            const SizedBox(height: 30.0),
+                          ],
+                        )
+                      : widget.args.type == "" && !widget.args.isFromCollection ?
+                        Wrap(
+                          spacing: 1.0,
+                          runSpacing: 1.0,
+                          children: [
+                            const CollectionHeader(headerText: "Bottom Wear"),
+                            const SizedBox(height: 5.0),
+                            ...BottomWearList.values.map(
+                            (bottomWear) => Padding(
+                                padding: const EdgeInsetsDirectional.symmetric(vertical: 2.5),
+                                child: CollectionButton(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context, 
+                                      "/collection_single",
+                                      arguments: CollectionSingleArgs(
+                                        category: bottomWear.name,
+                                        type: widget.args.type,
+                                      )
+                                    );
+                                  },
+                                  placeholderImage: bottomWear.image, 
+                                  title: bottomWear.name, 
+                                  punchline: bottomWear.punchline
+                                )
+                              ),
+                            ),
+                            const SizedBox(height: 30.0),
+                          ],
+                        )
+                      :
+                        const SizedBox.shrink(),
+                      widget.args.type == "Footwear" && widget.args.isFromCollection ?
+                        Wrap(
+                          spacing: 1.0,
+                          runSpacing: 1.0,
+                          children: [
+                            const CollectionHeader(headerText: "Footwear"),
+                            const SizedBox(height: 5.0),
+                            ...FootwearList.values.map(
+                              (footwear) => Padding(
+                                padding: const EdgeInsetsDirectional.symmetric(vertical: 2.5),
+                                child: CollectionButton(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context, 
+                                      "/collection_single",
+                                      arguments: CollectionSingleArgs(
+                                        category: footwear.name,
+                                        type: widget.args.type,
+                                        isFromCollection: widget.args.isFromCollection
+                                      )
+                                    );
+                                  },
+                                  placeholderImage: footwear.image, 
+                                  title: footwear.name, 
+                                  punchline: footwear.punchline
+                                )
+                              ),
+                            )
+                          ],
+                        )
+                      : widget.args.type == "" && !widget.args.isFromCollection ?
+                        Wrap(
+                          spacing: 1.0,
+                          runSpacing: 1.0,
+                          children: [
+                            const CollectionHeader(headerText: "Footwear"),
+                            const SizedBox(height: 5.0),
+                            ...FootwearList.values.map(
+                              (footwear) => Padding(
+                                padding: const EdgeInsetsDirectional.symmetric(vertical: 2.5),
+                                child: CollectionButton(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context, 
+                                      "/collection_single",
+                                      arguments: CollectionSingleArgs(
+                                        category: footwear.name,
+                                        type: widget.args.type,
+                                      )
+                                    );
+                                  },
+                                  placeholderImage: footwear.image, 
+                                  title: footwear.name, 
+                                  punchline: footwear.punchline
+                                )
+                              ),
+                            )
+                          ],
+                        )
+                      :
+                        const SizedBox.shrink()
                     ]
                   )
                 )
               ),
               const SizedBox(height: 30.0),
-              FindrobeButton(
-                buttonText: "Add Clothing to Collection", 
-                onPressed: () {
-                  Navigator.pushNamed(context, "/collection_add");
-                }
-              )
+              !widget.args.isFromCollection ?
+                FindrobeButton(
+                  buttonText: "Add Clothing to Collection", 
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/collection_add");
+                  }
+                )
+              :
+                const SizedBox.shrink()
             ]
           )
         )

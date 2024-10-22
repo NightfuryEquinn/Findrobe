@@ -93,3 +93,27 @@ class FollowState {
     );
   }
 }
+
+class FindrobeImageState {
+  final dynamic topWearImage;
+  final dynamic bottomWearImage;
+  final dynamic footwearImage;
+
+  FindrobeImageState({
+    this.topWearImage,
+    this.bottomWearImage,
+    this.footwearImage
+  });
+
+  FindrobeImageState copyWith({
+    dynamic topWearImage,
+    dynamic bottomWearImage,
+    dynamic footwearImage
+  }) {
+    return FindrobeImageState(
+      topWearImage: topWearImage ?? this.topWearImage,
+      bottomWearImage: bottomWearImage ?? this.bottomWearImage,
+      footwearImage: footwearImage ?? this.footwearImage
+    );
+  }
+}

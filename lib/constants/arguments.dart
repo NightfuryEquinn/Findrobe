@@ -36,8 +36,22 @@ class FollowersArgs {
 
 class CollectionSingleArgs {
   final String category;
+  final String type;
+  final bool isFromCollection;
 
   CollectionSingleArgs({
-    required this.category
+    required this.category,
+    required this.type,
+    this.isFromCollection = false
+  });
+}
+
+class CollectionArgs {
+  final bool isFromCollection;
+  final String type;
+
+  CollectionArgs({
+    required this.isFromCollection,
+    required this.type
   });
 }

@@ -1,14 +1,17 @@
 import 'package:findrobe_app/models/clothing.dart';
+import 'package:findrobe_app/providers/findrobe_image_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CollectionSingleSelect extends ConsumerWidget {
+  final String type;
   final FindrobeClothing clothing;
 
   const CollectionSingleSelect({
     super.key,
+    required this.type,
     required this.clothing
   });
 
@@ -29,7 +32,12 @@ class CollectionSingleSelect extends ConsumerWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(5.0),
             onTap: () {
-
+              ref.read(findrobeImageProvider.notifier).pickImageFromFirebase(type, clothing.image);
+              print(type);
+              print(clothing.image);
+              Navigator.of(context)
+                ..pop()
+                ..pop();
             },
             child: Row(
               children: [

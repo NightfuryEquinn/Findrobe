@@ -4,6 +4,7 @@ import 'package:findrobe_app/providers/auth_data_provider.dart';
 import 'package:findrobe_app/providers/collection_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/widgets/collection_single_field.dart';
+import 'package:findrobe_app/widgets/collection_single_select.dart';
 import 'package:findrobe_app/widgets/findrobe_empty.dart';
 import 'package:findrobe_app/widgets/findrobe_header.dart';
 import 'package:flutter/material.dart';
@@ -78,10 +79,16 @@ class _CollectionSinglePageState extends ConsumerState<CollectionSinglePage> {
                       itemBuilder: (context, index) {
                         final clothing = clothings[index];
 
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 15.0),
-                          child: CollectionSingleField(clothing: clothing)
-                        );
+                        return !widget.args.isFromCollection ?
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 15.0),
+                            child: CollectionSingleField(clothing: clothing)
+                          )
+                        :
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 15.0),
+                            child: CollectionSingleSelect(type: widget.args.type, clothing: clothing)
+                          );
                       },
                     ),
                 )
