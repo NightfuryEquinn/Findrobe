@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:findrobe_app/constants/firebase_collection.dart';
 import 'package:findrobe_app/constants/states.dart';
 import 'package:findrobe_app/models/user.dart';
-import 'package:findrobe_app/providers/auth_data_provider.dart';
-import 'package:findrobe_app/providers/user_data_provider.dart';
+import 'package:findrobe_app/providers/client/auth_data_provider.dart';
+import 'package:findrobe_app/providers/client/user_data_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FollowNotifier extends StateNotifier<FollowState> {

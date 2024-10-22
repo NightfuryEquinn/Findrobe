@@ -1,7 +1,7 @@
 import 'package:findrobe_app/constants/arguments.dart';
 import 'package:findrobe_app/models/clothing.dart';
-import 'package:findrobe_app/providers/auth_data_provider.dart';
-import 'package:findrobe_app/providers/collection_data_provider.dart';
+import 'package:findrobe_app/providers/client/auth_data_provider.dart';
+import 'package:findrobe_app/providers/client/collection_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/widgets/collection_single_field.dart';
 import 'package:findrobe_app/widgets/collection_single_select.dart';

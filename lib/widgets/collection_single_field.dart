@@ -1,8 +1,8 @@
 import 'package:findrobe_app/constants/arguments.dart';
 import 'package:findrobe_app/global/popup_modal.dart';
 import 'package:findrobe_app/models/clothing.dart';
-import 'package:findrobe_app/providers/collection_data_provider.dart';
-import 'package:findrobe_app/providers/loading_provider.dart';
+import 'package:findrobe_app/providers/client/collection_data_provider.dart';
+import 'package:findrobe_app/providers/client/loading_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:flutter/cupertino.dart';

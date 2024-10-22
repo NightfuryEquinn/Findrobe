@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:findrobe_app/providers/posts_data_provider.dart';
+import 'package:findrobe_app/providers/client/posts_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:flutter/cupertino.dart';

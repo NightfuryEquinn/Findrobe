@@ -1,5 +1,5 @@
 import 'package:findrobe_app/constants/arguments.dart';
-import 'package:findrobe_app/providers/findrobe_image_provider.dart';
+import 'package:findrobe_app/providers/client/findrobe_image_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';

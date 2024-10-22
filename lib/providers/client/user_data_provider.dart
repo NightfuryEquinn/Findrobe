@@ -1,6 +1,6 @@
 import 'package:findrobe_app/constants/states.dart';
 import 'package:findrobe_app/firebase/user_repo.dart';
-import 'package:findrobe_app/providers/posts_data_provider.dart';
+import 'package:findrobe_app/providers/client/posts_data_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class UserDataNotifier extends StateNotifier<UserDataState> {

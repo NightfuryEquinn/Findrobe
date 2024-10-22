@@ -1,6 +1,6 @@
 import 'package:findrobe_app/global/loading_overlay.dart';
-import 'package:findrobe_app/providers/auth_data_provider.dart';
-import 'package:findrobe_app/providers/loading_provider.dart';
+import 'package:findrobe_app/providers/client/auth_data_provider.dart';
+import 'package:findrobe_app/providers/client/loading_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';

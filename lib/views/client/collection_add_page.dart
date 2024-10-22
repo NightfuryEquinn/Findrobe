@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:findrobe_app/constants/arguments.dart';
 import 'package:findrobe_app/global/text_formatter.dart';
-import 'package:findrobe_app/providers/add_image_provider.dart';
-import 'package:findrobe_app/providers/auth_data_provider.dart';
-import 'package:findrobe_app/providers/collection_data_provider.dart';
-import 'package:findrobe_app/providers/dropdown_provider.dart';
-import 'package:findrobe_app/providers/loading_provider.dart';
+import 'package:findrobe_app/providers/client/add_image_provider.dart';
+import 'package:findrobe_app/providers/client/auth_data_provider.dart';
+import 'package:findrobe_app/providers/client/collection_data_provider.dart';
+import 'package:findrobe_app/providers/client/dropdown_provider.dart';
+import 'package:findrobe_app/providers/client/loading_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';
