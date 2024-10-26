@@ -63,6 +63,54 @@ class AuthRepo {
     return null;
   }
 
+  Future<bool> checkAdminStatus(String userId) async {
+    try {
+      DocumentSnapshot userSnapshot = await usersCollection
+        .doc(userId)
+        .get();
+
+      if (userSnapshot.exists) {
+        String role = FindrobeUser.fromMap(userSnapshot).role;
+
+        if (role == "admin") {
+          return true;
+        } else if (role == "user") {
+          return false;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("Error checking admin status: $e");
+      return false;
+    }
+  }
+
+  Future<bool> checkRestricted(String userId) async {
+    try {
+      DocumentSnapshot userSnapshot = await usersCollection
+        .doc(userId)
+        .get();
+      
+      if (userSnapshot.exists) {
+        bool isRestricted = FindrobeUser.fromMap(userSnapshot).isRestricted;
+
+        if (isRestricted) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("Error checking restricted: $e");
+      return false;
+    }
+  }
+
   Future<void> logoutUser() async {
     try {
       await _firebaseAuth.signOut();

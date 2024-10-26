@@ -342,7 +342,7 @@ class _CollectionAddPageState extends ConsumerState<CollectionAddPage> {
                               nameCtrl.text, 
                               formatFindrobeCollection(category: selectedValue!), 
                               newAddImage!, 
-                              currentUser!.uid
+                              currentUser.user!.uid
                             );
 
                             nameCtrl.text = "";
@@ -361,7 +361,7 @@ class _CollectionAddPageState extends ConsumerState<CollectionAddPage> {
                               nameCtrl.text, 
                               widget.args!.clothing.category, 
                               newAddImage, 
-                              currentUser!.uid
+                              currentUser.user!.uid
                             );
 
                             nameCtrl.text = "";

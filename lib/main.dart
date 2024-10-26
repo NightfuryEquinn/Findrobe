@@ -2,6 +2,7 @@ import 'package:findrobe_app/animations/fade_route.dart';
 import 'package:findrobe_app/constants/arguments.dart';
 import 'package:findrobe_app/firebase_options.dart';
 import 'package:findrobe_app/providers/client/auth_data_provider.dart';
+import 'package:findrobe_app/routes/admin_findrobe_bottombar.dart';
 import 'package:findrobe_app/routes/findrobe_bottombar.dart';
 import 'package:findrobe_app/views/client/collection_add_page.dart';
 import 'package:findrobe_app/views/client/collection_page.dart';
@@ -46,35 +47,42 @@ class MainApp extends ConsumerWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: currentUser != null ? const FindrobeBottomBar() : const LoginPage(),
+      // State delayed sometimes causing admin boolean ignored
+      // Which redirect admin to user screen
+      // Temp solution is to exit the app and reload
+      home: currentUser.user == null || currentUser.isRestricted ?
+        const LoginPage()
+      : currentUser.isAdmin ?
+        const AdminFindrobeBottomBar()
+      :
+        const FindrobeBottomBar(),
       onGenerateRoute: (RouteSettings settings) {
         Widget page;
 
         switch (settings.name) {
+          case "/admin_home":
+            page = const AdminFindrobeBottomBar();
+            break;
           case "/collection_add":
             final EditCollectionArgs? args = settings.arguments as EditCollectionArgs?;
-
             page = CollectionAddPage(
               args: args
             );
             break;
           case "/collection":
             final CollectionArgs args = settings.arguments as CollectionArgs;
-
             page = CollectionPage(
               args: args
             );
             break;
           case "/collection_single":
             final CollectionSingleArgs args = settings.arguments as CollectionSingleArgs;
-
             page = CollectionSinglePage(
               args: args,
             );
             break;
           case "/followers":
             final FollowersArgs args = settings.arguments as FollowersArgs;
-
             page = FindrobeFollowersPage(
               args: args
             );
@@ -90,7 +98,6 @@ class MainApp extends ConsumerWidget {
             break;
           case "/postrobe_single":
             final PostrobeSingleArgs args = settings.arguments as PostrobeSingleArgs;
-
             page = PostrobeSinglePage(
               args: args,
             );
@@ -106,7 +113,6 @@ class MainApp extends ConsumerWidget {
             break;
           case "/view_user":
             final ViewUserArgs args = settings.arguments as ViewUserArgs;
-
             page = ViewUserPage(
               args: args,
             );

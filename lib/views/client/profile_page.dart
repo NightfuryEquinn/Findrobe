@@ -41,13 +41,13 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
     final currentUser = ref.read(authDataNotifierProvider);
     
-    if (currentUser != null) {
+    if (currentUser.user != null) {
       Future.microtask(() async {
         await Future.wait([
           ref.read(userDataNotifierProvider.notifier).fetchUserData(),
-          ref.read(postsDataNotifierProvider.notifier).fetchPostByUserId(currentUser.uid),
-          ref.read(postsDataNotifierProvider.notifier).fetchCommentCountByUserId(currentUser.uid),
-          ref.read(followNotifierProvider(currentUser.uid).notifier).fetchFollowers(currentUser.uid)
+          ref.read(postsDataNotifierProvider.notifier).fetchPostByUserId(currentUser.user!.uid),
+          ref.read(postsDataNotifierProvider.notifier).fetchCommentCountByUserId(currentUser.user!.uid),
+          ref.read(followNotifierProvider(currentUser.user!.uid).notifier).fetchFollowers(currentUser.user!.uid)
         ]);
       });
     }
@@ -56,11 +56,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   Future<void> _refreshPosts() async {
     final currentUser = ref.watch(authDataNotifierProvider);
 
-    if (currentUser != null) {
+    if (currentUser.user != null) {
       await ref.read(userDataNotifierProvider.notifier).fetchUserData();
-      await ref.read(postsDataNotifierProvider.notifier).fetchPostByUserId(currentUser.uid);
-      await ref.read(postsDataNotifierProvider.notifier).fetchCommentCountByUserId(currentUser.uid);
-      await ref.read(followNotifierProvider(currentUser.uid).notifier).fetchFollowers(currentUser.uid);
+      await ref.read(postsDataNotifierProvider.notifier).fetchPostByUserId(currentUser.user!.uid);
+      await ref.read(postsDataNotifierProvider.notifier).fetchCommentCountByUserId(currentUser.user!.uid);
+      await ref.read(followNotifierProvider(currentUser.user!.uid).notifier).fetchFollowers(currentUser.user!.uid);
     }
   }
 
@@ -175,7 +175,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     final FindrobeUser? user = ref.watch(userDataNotifierProvider).currentUser;
     final List<FindrobePost> userPosts = ref.watch(postsDataNotifierProvider).userPosts;
     final int userCommentCount = ref.watch(postsDataNotifierProvider).userCommentCount;
-    final followState = ref.watch(followNotifierProvider(user?.userId));
+    final followState = user?.userId != null ? ref.watch(followNotifierProvider(user?.userId)) : null;
 
     if (user != null) {
       userCtrl.text = user.username;
@@ -292,7 +292,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                         style: AppFonts.forum16black
                                       ),
                                       Text(
-                                        "${followState.followersCount}",
+                                        "${followState!.followersCount}",
                                         style: AppFonts.forum16black
                                       )
                                     ],
@@ -371,6 +371,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                 buttonColor: AppColors.black,
                                 onPressed: () {
                                   ref.read(userDataNotifierProvider.notifier).logoutUser(ref);
+                                  ref.read(authDataNotifierProvider.notifier).clearSession();
                                   Navigator.pushReplacementNamed(context, "/login");
                                 }
                               ),

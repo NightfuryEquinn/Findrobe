@@ -1,36 +1,36 @@
 import 'package:findrobe_app/global/loading_overlay.dart';
 import 'package:findrobe_app/models/post.dart';
-import 'package:findrobe_app/providers/client/posts_data_provider.dart';
+import 'package:findrobe_app/providers/admin/admin_monitor_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
+import 'package:findrobe_app/widgets/findrobe_empty.dart';
 import 'package:findrobe_app/widgets/findrobe_header.dart';
 import 'package:findrobe_app/widgets/findrobe_post_card.dart';
-import 'package:findrobe_app/widgets/findrobe_empty.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PostrobePage extends ConsumerStatefulWidget {
-  const PostrobePage({super.key});
+class MonitorPostsPage extends ConsumerStatefulWidget {
+  const MonitorPostsPage({super.key});
 
   @override
-  ConsumerState<PostrobePage> createState() => _PostrobePageState();
+  ConsumerState<MonitorPostsPage> createState() => _MonitorPostsPageState();
 }
 
-class _PostrobePageState extends ConsumerState<PostrobePage> {
+class _MonitorPostsPageState extends ConsumerState<MonitorPostsPage> {
   @override
   void initState() {
     super.initState();
 
-    Future.microtask(() => ref.read(postsDataNotifierProvider.notifier).fetchAllPosts());
+    Future.microtask(() => ref.read(adminMonitorNotifierProvider.notifier).fetchAllPosts());
   }
 
   Future<void> _refreshPosts() async {
-    await ref.read(postsDataNotifierProvider.notifier).fetchAllPosts();
+    await ref.read(adminMonitorNotifierProvider.notifier).fetchAllPosts();
   }
-
+  
   @override
   Widget build(BuildContext context) {
-    final List<FindrobePost>? posts = ref.watch(postsDataNotifierProvider).allPosts;
-
+    final List<FindrobePost>? posts = ref.watch(adminMonitorNotifierProvider).allPosts;
+    
     return Scaffold(
       backgroundColor: AppColors.grey,
       body: posts == null ?
@@ -41,7 +41,7 @@ class _PostrobePageState extends ConsumerState<PostrobePage> {
             padding: const EdgeInsets.all(30.0),
             child: Column(
               children: [
-                const FindrobeHeader(headerTitle: "Postrobes"),
+                const FindrobeHeader(headerTitle: "All Posts"),
                 const SizedBox(height: 30.0),
                 Expanded(
                   child: RefreshIndicator(
@@ -62,13 +62,13 @@ class _PostrobePageState extends ConsumerState<PostrobePage> {
                             child: FindrobePostCard(post: post)
                           );
                         }
-                      ),
+                      )
                   )
-                ),
-              ],
-            ),
-          ),
-        ),
+                )
+              ]
+            )
+          )
+        )
     );
   }
 }

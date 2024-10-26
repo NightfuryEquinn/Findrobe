@@ -55,7 +55,7 @@ final likeButtonProvider = StateNotifierProvider.family<LikeButtonNotifier, Like
   
   return LikeButtonNotifier(
     postId: postId,
-    userId: currentUser!.uid,
+    userId: currentUser.user!.uid,
     initialCount: initialCount
   );
 });

@@ -75,16 +75,18 @@ class FindrobeComment extends ConsumerWidget {
             children: [
               InkWell(
                 onTap: () {
-                  if (user!.userId == currentUser?.uid) {
-                    Navigator.pushNamed(context, "/profile");
-                  } else {
-                    Navigator.pushNamed(
-                      context, 
-                      "/view_user",
-                      arguments: ViewUserArgs(
-                        userId: user!.userId
-                      )  
-                    );
+                  if (!currentUser.isAdmin) {
+                    if (user!.userId == currentUser.user?.uid) {
+                      Navigator.pushNamed(context, "/profile");
+                    } else {
+                      Navigator.pushNamed(
+                        context, 
+                        "/view_user",
+                        arguments: ViewUserArgs(
+                          userId: user!.userId
+                        )  
+                      );
+                    }
                   }
                 },
                 child: ClipRRect(
@@ -141,7 +143,7 @@ class FindrobeComment extends ConsumerWidget {
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0))
                 ),
-                child: currentUser?.uid == comment.userId ?
+                child: currentUser.user?.uid == comment.userId || currentUser.isAdmin ?
                   InkWell(
                     borderRadius: BorderRadius.circular(5.0),
                     onTap: () {

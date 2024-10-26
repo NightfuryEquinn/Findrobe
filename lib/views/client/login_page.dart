@@ -1,6 +1,7 @@
 import 'package:findrobe_app/global/loading_overlay.dart';
 import 'package:findrobe_app/providers/client/auth_data_provider.dart';
 import 'package:findrobe_app/providers/client/loading_provider.dart';
+import 'package:findrobe_app/providers/client/user_data_provider.dart';
 import 'package:findrobe_app/theme/app_colors.dart';
 import 'package:findrobe_app/theme/app_fonts.dart';
 import 'package:findrobe_app/widgets/findrobe_button.dart';
@@ -21,12 +22,32 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   final TextEditingController emailCtrl = TextEditingController();
   final TextEditingController passwordCtrl = TextEditingController();
   bool isOverlayShown = false;
-  bool workAround = false;
 
   Future<void> _signInUser(BuildContext context, WidgetRef ref, String email, String password) async {
     ref.read(loadingProvider.notifier).show();
 
-    if (email.isNotEmpty && password.isNotEmpty) {
+    final currentUser = ref.watch(authDataNotifierProvider);
+
+    if (currentUser.isRestricted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.beige,
+          content: Text(
+            "Your account is restricted by admin. Please request an appeal via admin@gmail.com!",
+            style: AppFonts.forum16black,
+          ),
+          duration: const Duration(seconds: 3)
+        )
+      );
+
+      await ref.read(userDataNotifierProvider.notifier).logoutUser(ref);
+      await ref.read(authDataNotifierProvider.notifier).clearSession();
+      ref.read(loadingProvider.notifier).hide();
+      
+      return;
+    }
+
+    if (!currentUser.isRestricted && email.isNotEmpty && password.isNotEmpty) {
       try {
         User? user = await ref.read(authDataNotifierProvider.notifier).signInUser(email, password);
 
@@ -44,21 +65,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             )
           );
         }
-
-        if (!workAround) {
-          workAround = true; 
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: AppColors.beige,
-              content: Text(
-                "Please press login again...",
-                style: AppFonts.forum16black,
-              ),
-              duration: const Duration(seconds: 3)
-            )
-          );
-        }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -67,7 +73,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               "An error occured: $e",
               style: AppFonts.forum16black,
             ),
-            duration: const Duration(seconds: 2)
+            duration: const Duration(seconds: 3)
           )
         );
       }

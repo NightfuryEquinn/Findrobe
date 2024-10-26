@@ -1,5 +1,38 @@
 import 'package:findrobe_app/models/post.dart';
 import 'package:findrobe_app/models/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+class AuthDataState {
+  final User? user;
+  final bool isAdmin;
+  final bool isRestricted;
+
+  AuthDataState({
+    this.user,
+    this.isAdmin = false,
+    this.isRestricted = false
+  });
+
+  factory AuthDataState.initial() {
+    return AuthDataState(
+      user: null, 
+      isAdmin: false,
+      isRestricted: false
+    );
+  }
+
+  AuthDataState copyWith({
+    User? user,
+    bool? isAdmin,
+    bool? isRestricted,
+  }) {
+    return AuthDataState(
+      user: user ?? this.user, 
+      isAdmin: isAdmin ?? this.isAdmin,
+      isRestricted: isRestricted ?? this.isRestricted
+    );
+  }
+}
 
 class PostsDataState {
   final List<FindrobePost> allPosts;
@@ -114,6 +147,48 @@ class FindrobeImageState {
       topWearImage: topWearImage ?? this.topWearImage,
       bottomWearImage: bottomWearImage ?? this.bottomWearImage,
       footwearImage: footwearImage ?? this.footwearImage
+    );
+  }
+}
+
+class AdminMonitorState {
+  final List<FindrobeUser> allUsers;
+  final List<FindrobePost> allPosts;
+  final int allComments;
+  final int allClothings;
+  final int allLikes;
+
+  AdminMonitorState({
+    required this.allUsers,
+    required this.allPosts,
+    required this.allComments,
+    required this.allClothings,
+    required this.allLikes
+  });
+
+  factory AdminMonitorState.initial() {
+    return AdminMonitorState(
+      allUsers: [],
+      allPosts: [],
+      allComments: 0,
+      allClothings: 0,
+      allLikes: 0
+    );
+  }
+
+  AdminMonitorState copyWith({
+    List<FindrobeUser>? allUsers,
+    List<FindrobePost>? allPosts,
+    int? allComments,
+    int? allClothings,
+    int? allLikes,
+  }) {
+    return AdminMonitorState(
+      allUsers: allUsers ?? this.allUsers,
+      allPosts: allPosts ?? this.allPosts,
+      allComments: allComments ?? this.allComments,
+      allClothings: allClothings ?? this.allClothings,
+      allLikes: allLikes ?? this.allLikes,
     );
   }
 }

@@ -90,7 +90,7 @@ class FollowNotifier extends StateNotifier<FollowState> {
 }
 
 final followNotifierProvider = StateNotifierProvider.family<FollowNotifier, FollowState, String?>((ref, followUserId) {
-  final currentUserId = ref.watch(authDataNotifierProvider)?.uid;
+  final currentUserId = ref.watch(authDataNotifierProvider).user?.uid;
 
   return FollowNotifier(
     currentUserId: currentUserId!, 

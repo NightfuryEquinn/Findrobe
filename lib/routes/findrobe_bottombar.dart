@@ -46,11 +46,11 @@ class FindrobeBottomBar extends ConsumerWidget {
           if (value == 3) {
             final currentUser = ref.watch(authDataNotifierProvider);
 
-            if (currentUser != null) {
+            if (currentUser.user != null) {
               ref.read(userDataNotifierProvider.notifier).fetchUserData();
-              ref.read(postsDataNotifierProvider.notifier).fetchPostByUserId(currentUser.uid);
-              ref.read(postsDataNotifierProvider.notifier).fetchCommentCountByUserId(currentUser.uid);
-              ref.read(followNotifierProvider(currentUser.uid).notifier).fetchFollowers(currentUser.uid);
+              ref.read(postsDataNotifierProvider.notifier).fetchPostByUserId(currentUser.user!.uid);
+              ref.read(postsDataNotifierProvider.notifier).fetchCommentCountByUserId(currentUser.user!.uid);
+              ref.read(followNotifierProvider(currentUser.user!.uid).notifier).fetchFollowers(currentUser.user!.uid);
             }
           }
         },

@@ -22,7 +22,7 @@ class FindrobePostCard extends ConsumerWidget {
     required this.post
   });
 
-  Future<void> _deletePost(BuildContext context, WidgetRef ref, String postId, String userId) async {
+  Future<void> _deletePost(BuildContext context, WidgetRef ref, String postId) async {
     ref.read(loadingProvider.notifier).show();
 
     final bool deleted = await ref.read(postDataNotifierProvider.notifier).deletePost(post.postId);
@@ -73,16 +73,18 @@ class FindrobePostCard extends ConsumerWidget {
             children: [
               InkWell(
                 onTap: () {
-                  if (post.userId == currentUser?.uid) {
-                    Navigator.pushNamed(context, "/profile");
-                  } else {
-                    Navigator.pushNamed(
-                      context, 
-                      "/view_user",
-                      arguments: ViewUserArgs(
-                        userId: post.userId
-                      )  
-                    );
+                  if (!currentUser.isAdmin) {
+                    if (post.userId == currentUser.user?.uid) {
+                      Navigator.pushNamed(context, "/profile");
+                    } else {
+                      Navigator.pushNamed(
+                        context, 
+                        "/view_user",
+                        arguments: ViewUserArgs(
+                          userId: post.userId
+                        )  
+                      );
+                    }
                   }
                 },
                 child: ClipRRect(
@@ -123,11 +125,11 @@ class FindrobePostCard extends ConsumerWidget {
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0))
                 ),
-                child: currentUser!.uid == post.userId ?
+                child: currentUser.user?.uid == post.userId || currentUser.isAdmin ?
                   InkWell(
                     borderRadius: BorderRadius.circular(5.0),
                     onTap: () {
-                      _deletePost(context, ref, post.postId, post.userId);
+                      _deletePost(context, ref, post.postId);
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(5.0),
@@ -155,6 +157,17 @@ class FindrobePostCard extends ConsumerWidget {
             post.title,
             style: AppFonts.poiret20
           ),
+          currentUser.isAdmin ?
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Text(
+                post.body,
+                style: AppFonts.forum12,
+                textAlign: TextAlign.justify,
+              ),
+            )
+          :
+            const SizedBox.shrink(),
           const SizedBox(height: 15.0),
           SizedBox(
             height: 100,
@@ -181,8 +194,11 @@ class FindrobePostCard extends ConsumerWidget {
           const SizedBox(height: 10.0),
           Row(
             children: [
-              LikeButtonBlock(postId: post.postId, userId: currentUser.uid),
-              const SizedBox(width: 25.0),
+              if (!currentUser.isAdmin)
+                Padding(
+                  padding: const EdgeInsets.only(right: 25.0),
+                  child: LikeButtonBlock(postId: post.postId, userId: currentUser.user!.uid),
+                ),
               CommentButtonBlock(postId: post.postId)
             ],
           )

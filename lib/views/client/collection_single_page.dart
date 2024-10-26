@@ -29,10 +29,10 @@ class _CollectionSinglePageState extends ConsumerState<CollectionSinglePage> {
 
     final currentUser = ref.read(authDataNotifierProvider);
 
-    if (currentUser != null) {
+    if (currentUser.user != null) {
       Future.microtask(() async {
         await Future.wait([
-          ref.read(collectionDataNotifierProvider.notifier).fetchClothing(currentUser.uid, widget.args.category)
+          ref.read(collectionDataNotifierProvider.notifier).fetchClothing(currentUser.user!.uid, widget.args.category)
         ]);
       });
     }
@@ -41,10 +41,10 @@ class _CollectionSinglePageState extends ConsumerState<CollectionSinglePage> {
   Future<void> _refreshCollection() async {
     final currentUser = ref.read(authDataNotifierProvider);
 
-    if (currentUser != null) {
+    if (currentUser.user != null) {
       Future.microtask(() async {
         await Future.wait([
-          ref.read(collectionDataNotifierProvider.notifier).fetchClothing(currentUser.uid, widget.args.category)
+          ref.read(collectionDataNotifierProvider.notifier).fetchClothing(currentUser.user!.uid, widget.args.category)
         ]);
       });
     }

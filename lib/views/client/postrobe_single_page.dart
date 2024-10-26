@@ -127,7 +127,9 @@ class _PostrobePageState extends ConsumerState<PostrobeSinglePage> {
                                 children: [
                                   InkWell(
                                     onTap: () {
-                                      Navigator.pushNamed(context, "/profile");
+                                      if (!currentUser.isAdmin) {
+                                        Navigator.pushNamed(context, "/profile");
+                                      }
                                     },
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(5.0),
@@ -210,31 +212,39 @@ class _PostrobePageState extends ConsumerState<PostrobeSinglePage> {
                               const SizedBox(height: 10.0),
                               Row(
                                 children: [
-                                  LikeButtonBlock(postId: thePost.postId, userId: currentUser!.uid),
-                                  const SizedBox(width: 25.0),
+                                  if (!currentUser.isAdmin)
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 25.0),
+                                      child: LikeButtonBlock(postId: thePost.postId, userId: currentUser.user!.uid),
+                                    ),
                                   CommentButtonBlock(postId: thePost.postId)
                                 ],
                               )
                             ]
                           )
                         ),
-                        const SizedBox(height: 15.0),
-                        FindrobeTextfield(labelText: "", controller: commentCtrl),
-                        const SizedBox(height: 5.0),
-                        FindrobeButton(
-                          buttonText: "Comment",
-                          onPressed: () {
-                            _commentPost(
-                              context, 
-                              ref, 
-                              commentCtrl.text, 
-                              currentUser.uid, 
-                              thePost.postId
-                            );
+                        if (!currentUser.isAdmin)
+                          Column(
+                            children: [
+                              const SizedBox(height: 15.0),
+                              FindrobeTextfield(labelText: "", controller: commentCtrl),
+                              const SizedBox(height: 5.0),
+                              FindrobeButton(
+                                buttonText: "Comment",
+                                onPressed: () {
+                                  _commentPost(
+                                    context, 
+                                    ref, 
+                                    commentCtrl.text, 
+                                    currentUser.user!.uid, 
+                                    thePost.postId
+                                  );
 
-                            commentCtrl.text = "";
-                          }
-                        ),
+                                  commentCtrl.text = "";
+                                }
+                              ),
+                            ],
+                          ),
                         const SizedBox(height: 30.0),
                         if (thePost.comments != null)
                           ...thePost.comments!.asMap().entries.map((entry) {

@@ -1,5 +1,6 @@
 import 'package:findrobe_app/constants/states.dart';
 import 'package:findrobe_app/firebase/user_repo.dart';
+import 'package:findrobe_app/providers/client/auth_data_provider.dart';
 import 'package:findrobe_app/providers/client/posts_data_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -44,6 +45,7 @@ class UserDataNotifier extends StateNotifier<UserDataState> {
       state = UserDataState.initial();
 
       await ref.read(postsDataNotifierProvider.notifier).clearPosts();
+      await ref.read(authDataNotifierProvider.notifier).clearSession();
     } catch (e) {
       print("Error log out: $e");
     }
