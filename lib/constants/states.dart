@@ -157,13 +157,21 @@ class AdminMonitorState {
   final int allComments;
   final int allClothings;
   final int allLikes;
+  final Map<String, int> clothingsMonth;
+  final Map<String, int> usersMonth;
+  final Map<String, int> postsMonth;
+  final Map<String, int> commentsMonth;
 
   AdminMonitorState({
     required this.allUsers,
     required this.allPosts,
     required this.allComments,
     required this.allClothings,
-    required this.allLikes
+    required this.allLikes,
+    required this.clothingsMonth,
+    required this.usersMonth,
+    required this.postsMonth,
+    required this.commentsMonth,
   });
 
   factory AdminMonitorState.initial() {
@@ -172,7 +180,11 @@ class AdminMonitorState {
       allPosts: [],
       allComments: 0,
       allClothings: 0,
-      allLikes: 0
+      allLikes: 0,
+      clothingsMonth: {},
+      usersMonth: {},
+      postsMonth: {},
+      commentsMonth: {},
     );
   }
 
@@ -182,6 +194,10 @@ class AdminMonitorState {
     int? allComments,
     int? allClothings,
     int? allLikes,
+    Map<String, int>? clothingsMonth,
+    Map<String, int>? usersMonth,
+    Map<String, int>? postsMonth,
+    Map<String, int>? commentsMonth,
   }) {
     return AdminMonitorState(
       allUsers: allUsers ?? this.allUsers,
@@ -189,6 +205,10 @@ class AdminMonitorState {
       allComments: allComments ?? this.allComments,
       allClothings: allClothings ?? this.allClothings,
       allLikes: allLikes ?? this.allLikes,
+      clothingsMonth: clothingsMonth ?? this.clothingsMonth,
+      usersMonth: usersMonth ?? this.usersMonth,
+      postsMonth: postsMonth ?? this.postsMonth,
+      commentsMonth: commentsMonth ?? this.commentsMonth,
     );
   }
 }

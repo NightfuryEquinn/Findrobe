@@ -45,6 +45,26 @@ class AdminMonitorNotifier extends StateNotifier<AdminMonitorState> {
     final allLikes = await _adminRepo.fetchAllLikes();
     state = state.copyWith(allLikes: allLikes);
   }
+
+  Future<void> fetchAllClothingsByMonth() async {
+    final clothings = await _adminRepo.fetchAllClothingsByMonth();
+    state = state.copyWith(clothingsMonth: clothings);
+  }
+
+  Future<void> fetchAllUsersByMonth() async {
+    final users = await _adminRepo.fetchAllUsersByMonth();
+    state = state.copyWith(usersMonth: users);
+  }
+
+  Future<void> fetchAllPostsByMonth() async {
+    final posts = await _adminRepo.fetchAllPostsByMonth();
+    state = state.copyWith(postsMonth: posts);
+  }
+
+  Future<void> fetchAllCommentsByMonth() async {
+    final comments = await _adminRepo.fetchAllCommentsByMonth();
+    state = state.copyWith(commentsMonth: comments);
+  }
 }
 
 final adminMonitorProvider = Provider<AdminRepo>((ref) {

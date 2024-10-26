@@ -150,4 +150,90 @@ class AdminRepo {
       return 0;
     }
   }
+
+  Future<Map<String, int>> fetchAllClothingsByMonth() async {
+    Map<String, int> clothings = {};
+
+    try {
+      QuerySnapshot querySnapshot = await _firestore.collectionGroup(categoryInClothingCollection).get();
+
+      for (var doc in querySnapshot.docs) {
+        Timestamp createdAt = doc["createdAt"];
+        DateTime date = createdAt.toDate();
+
+        String monthKey = "${date.year}-${date.month.toString().padLeft(2, '0')}";
+        clothings.update(monthKey, (index) => index + 1, ifAbsent: () => 1);
+      }
+
+      return clothings;
+    } catch (e) {
+      print("Failed to fetch clothings by month: $e");
+      return {};
+    }
+  }
+
+  Future<Map<String, int>> fetchAllUsersByMonth() async {
+    Map<String, int> users = {};
+
+    try {
+      QuerySnapshot querySnapshot = await usersCollection
+        .where("role", isEqualTo: "user")
+        .get();
+
+      for (var doc in querySnapshot.docs) {
+        Timestamp dateRegistered = doc["dateRegistered"];
+        DateTime date = dateRegistered.toDate();
+
+        String monthKey = "${date.year}-${date.month.toString().padLeft(2, '0')}";
+        users.update(monthKey, (index) => index + 1, ifAbsent: () => 1);
+      }
+
+      return users;
+    } catch (e) {
+      print("Failed to fetch users by month: $e");
+      return {};
+    }
+  }
+
+  Future<Map<String, int>> fetchAllPostsByMonth() async {
+    Map<String, int> posts = {};
+
+    try {
+      QuerySnapshot querySnapshot = await postsCollection.get();
+
+      for (var doc in querySnapshot.docs) {
+        Timestamp createdAt = doc["createdAt"];
+        DateTime date = createdAt.toDate();
+
+        String monthKey = "${date.year}-${date.month.toString().padLeft(2, '0')}";
+        posts.update(monthKey, (index) => index + 1, ifAbsent: () => 1);
+      }
+
+      return posts;
+    } catch (e) {
+      print("Failed to fetch users by month: $e");
+      return {};
+    }
+  }
+
+  Future<Map<String, int>> fetchAllCommentsByMonth() async {
+    Map<String, int> comments = {};
+
+    try {
+      QuerySnapshot querySnapshot = await _firestore.collectionGroup(commentsInPostCollection).get();
+
+      for (var doc in querySnapshot.docs) {
+        Timestamp commentedAt = doc["commentedAt"];
+        DateTime date = commentedAt.toDate();
+
+        String monthKey = "${date.year}-${date.month.toString().padLeft(2, '0')}";
+        comments.update(monthKey, (index) => index + 1, ifAbsent: () => 1);
+      }
+
+      return comments;
+    } catch (e) {
+      print("Failed to fetch users by month: $e");
+      return {};
+    }
+  }
 }
