@@ -19,7 +19,7 @@ class AnalyticsPage extends ConsumerStatefulWidget {
 }
 
 class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
-  final List<Map<String, int>> _graphDataList = [
+  List<Map<String, int>> _graphDataList = [
     {}, {}, {}, {}
   ];
   final List<String> _graphTitleList = [
@@ -73,6 +73,13 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
   Widget build(BuildContext context) {
     final analytics = ref.watch(adminMonitorNotifierProvider);
     final currentIndex = ref.watch(adminGraphIndexProvider);
+
+    _graphDataList = [
+      analytics.clothingsMonth,
+      analytics.commentsMonth,
+      analytics.postsMonth,
+      analytics.usersMonth
+    ];
 
     return Scaffold(
       backgroundColor: AppColors.grey,
