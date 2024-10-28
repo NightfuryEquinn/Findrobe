@@ -2,7 +2,7 @@
 ## ⚙️ Platform Used: VS Code, Oppo A95 on Android 13 (API 33)
 ### 🎥 Demo Video
 
-
+https://github.com/user-attachments/assets/2ef96caa-988e-4afb-ae93-22f125d83f90
 
 <hr />
 
