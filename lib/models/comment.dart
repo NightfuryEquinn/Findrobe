@@ -7,7 +7,7 @@ class PostrobeComment {
   final String userId;
   final String postId;
   final Timestamp commentedAt;
-  FindrobeUser? user;
+  FindrobeUser? user; // Optional, not saved in Firestore
 
   PostrobeComment({
     required this.commentId,

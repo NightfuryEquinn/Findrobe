@@ -288,7 +288,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "Total Followers",
+                                        "Total Following",
                                         style: AppFonts.forum16black
                                       ),
                                       Text(
